@@ -2,67 +2,15 @@
 import { ref } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-import userAgent from './jssip'
+import simpleUser from './jssip';
 
-const session = ref({});
-function call(number) {
-  // Register callbacks to desired call events
-  const eventHandlers = {
-    progress: (e) => {
-      console.log('call is in progress')
-    },
-    failed: (e) => {
-      console.log('call failed with cause: ' + e?.cause)
-      console.log({ e })
-    },
-    ended: (e) => {
-      console.log('call ended with cause: ' + e?.cause)
-    },
-    confirmed: (e) => {
-      console.log('call confirmed')
-      console.log({ e })
-    }
-  }
 
-  var options = {
-    eventHandlers: eventHandlers,
-    mediaConstraints: {
-      audio: true,
-      video: false
-    },
-    rtcOfferConstraints: {
-      'offerToReceiveAudio': true,
-      'offerToReceiveVideo': false
-    },
-    // pcConfig: {
-    //   iceServers: []
-    // }
-  }
-  if (!navigator.mediaDevices?.enumerateDevices) {
-    console.log("enumerateDevices() not supported.");
-  } else {
-    // List cameras and microphones.
-    navigator.mediaDevices
-      .enumerateDevices()
-      .then((devices) => {
-        devices.forEach((device) => {
-          console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
-        });
-      })
-      .catch((err) => {
-        console.error(`${err.name}: ${err.message}`);
-      });
-  }
-  navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(() => {
-    session.value = userAgent.call(`sip:${number}@gippars.ru`, options)
-    console.log(session.value.connection.connectionState)
-  })
+
+function call(){
 
 }
-function terminate(session) {
-  console.log(session.connection.connectionState)
-  if (session.connection.connectionState === 'connected') session.terminate();
-}
+
+function terminate(){}
 </script>
 
 <template>
@@ -80,7 +28,7 @@ function terminate(session) {
   <button @click="call(600)">600 (Echo test)</button>
   <button @click="call(202)">202 (Second account)</button>
   <button @click="call(602)">602 (Re-call)</button>
-  <button @click="terminate(session)">TERMINATE</button>
+  <button @click="terminate()">TERMINATE</button>
 </template>
 
 <style scoped>

@@ -1,105 +1,42 @@
-import JsSIP from 'jssip'
+// const configuration = {
+//   sockets: [socket],
+//   uri: 'sip:200@gippars.ru',
+//   password: 'Hatr8Qhb!h122Qr',
+//   realm: 'asterisk'
+// }
+import { Web } from 'sip.js'
 
-// Create our JsSIP instance and run it:
-const socket = new JsSIP.WebSocketInterface('wss://gippars.ru:4443/ws')
-const configuration = {
-  sockets: [socket],
-  uri: 'sip:200@gippars.ru',
-  password: 'Hatr8Qhb!h122Qr',
-  realm: 'asterisk'
+// Helper function to get an HTML audio element
+function getAudioElement(id) {
+  //const el = document.getElementById(id)
+  const el = new Audio()
+  if (!(el instanceof HTMLAudioElement)) {
+    throw new Error(`Element "${id}" not found or not an audio element.`)
+  }
+  return el
 }
 
-const ua = new JsSIP.UA(configuration)
-ua.on('connected', (e) => {
-  console.log('Connected..')
-  console.log({ e })
-})
-
-ua.on('disconnected', (e) => {
-  console.log('disconnected...')
-})
-
-ua.on('sending', (e) => {
-  console.log('sending...')
-})
-
-ua.on('newRTCSession', (ev1) => {
-  console.log('new RTC Sesion...')
-  console.log({ ev1 })
-
-  const session = ev1.session
-
-  session.connection.addEventListener('track', function (e) {
-    console.log('set remote audio stream')
-    console.log({ e })
-    //const remoteAudio = new Audio('https://upload.wikimedia.org/wikipedia/commons/5/52/Hymni_i_Flamurit_instrumental.ogg')
-    // const remoteAudio = new Audio()
-    // remoteAudio.srcObject = e.streams[0]
-    // remoteAudio.play()
-
-    var ctx = new AudioContext()
-    var audio = new Audio()
-    audio.srcObject = e.streams[0]
-    var gainNode = ctx.createGain()
-    gainNode.gain.value = 0.5
-    audio.onloadedmetadata = () => {
-      var source = ctx.createMediaStreamSource(audio.srcObject)
-      audio.play()
-      audio.muted = true
-      source.connect(gainNode)
-      gainNode.connect(ctx.destination)
-    }
-
-    console.log('connectionState:', session.connection.connectionState)
-  })
-
-  session.on('confirmed', (e) => {
-    console.log('the call has connected, and audio is playing')
-    console.log({ e })
-    const localStream = session.connection.getLocalStreams()[0]
-    session.connection.createDTMFSender(localStream.getAudioTracks()[0])
-  })
-})
-
-ua.on('newMessage', (e) => {
-  console.log('new message...')
-})
-
-ua.on('registered', (e) => {
-  console.log('registered...')
-  console.log({ e })
-})
-ua.on('unregistered', (e) => {
-  console.log('unregistered...')
-})
-ua.on('registrationFailed', (e) => {
-  console.log('registratin failed...')
-})
-
-// Register callbacks to desired call events
-const eventHandlers = {
-  progress: (e) => {
-    console.log('call is in progress')
-  },
-  failed: (e) => {
-    console.log('call failed with cause: ' + e?.cause)
-    console.log({ e })
-  },
-  ended: (e) => {
-    console.log('call ended with cause: ' + e?.cause)
-  },
-  confirmed: (e) => {
-    console.log('call confirmed')
-    console.log({ e })
+// Options for SimpleUser
+const options = {
+  aor: 'sip:200@gippars.ru', // caller
+  media: {
+    constraints: { audio: true, video: false }, // audio only call
+    remote: { audio: getAudioElement('remoteAudio') } // play remote audio
   }
 }
 
-var options = {
-  eventHandlers: eventHandlers,
-  mediaConstraints: { audio: true, video: true }
-}
+// WebSocket server to connect with
+const server = 'wss://gippars.ru:4443/ws'
 
-ua.start()
-ua.call('sip:600@gippars.ru', options)
+// Construct a SimpleUser instance
+const simpleUser = new Web.SimpleUser(server, options)
 
-export default ua
+// Connect to server and place call
+simpleUser
+  .connect()
+  .then(() => simpleUser.call('sip:200@gippars.ru'))
+  .catch((error) => {
+    console.log(error)
+  })
+
+export default simpleUser

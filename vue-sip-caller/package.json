@@ -12,6 +12,7 @@
   "dependencies": {
     "jssip": "^3.10.1",
     "pinia": "^2.1.7",
+    "sip.js": "^0.21.2",
     "vue": "^3.3.4"
   },
   "devDependencies": {
