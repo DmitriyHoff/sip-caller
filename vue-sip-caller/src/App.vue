@@ -1,9 +1,11 @@
 <script setup>
+import { ref } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 import userAgent from './jssip'
 
-function call() {
+const session = ref({});
+function call(number) {
   // Register callbacks to desired call events
   const eventHandlers = {
     progress: (e) => {
@@ -52,9 +54,14 @@ function call() {
       });
   }
   navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(() => {
-    userAgent.call('sip:600@gippars.ru', options)
+    session.value = userAgent.call(`sip:${number}@gippars.ru`, options)
+    console.log(session.value.connection.connectionState)
   })
 
+}
+function terminate(session) {
+  console.log(session.connection.connectionState)
+  if (session.connection.connectionState === 'connected') session.terminate();
 }
 </script>
 
@@ -70,7 +77,10 @@ function call() {
   <main>
     <TheWelcome />
   </main>
-  <button @click="call">CALL 600</button>
+  <button @click="call(600)">600 (Echo test)</button>
+  <button @click="call(202)">202 (Second account)</button>
+  <button @click="call(602)">602 (Re-call)</button>
+  <button @click="terminate(session)">TERMINATE</button>
 </template>
 
 <style scoped>
