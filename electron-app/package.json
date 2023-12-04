@@ -37,5 +37,11 @@
     "prettier": "^3.0.2",
     "vite": "^4.4.9",
     "vue": "^3.3.4"
+  },
+  "extendInfo": {
+    "NSMicrophoneUsageDescription": "Please give us access to your microphone",
+    "NSCameraUsageDescription": "Please give us access to your camera",
+    "com.apple.security.device.audio-input": true,
+    "com.apple.security.device.camera": true
   }
 }

@@ -1,11 +1,17 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, systemPreferences } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-function createWindow() {
+
+
+async function createWindow() {
+  const microphone = await systemPreferences.askForMediaAccess('microphone');
+    const camera = await systemPreferences.askForMediaAccess('camera');
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    
+    
     width: 900,
     height: 670,
     show: false,
