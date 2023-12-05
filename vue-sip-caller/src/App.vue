@@ -1,55 +1,71 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-import MySipClient from './my-sip-client'
+import delegate from './su-delegate'
 
-const uri = 'sip:200@gippars.ru'
-const login = '200'
-const password = 'Hatr8Qhb!h122Qr'
-const server = 'wss://gippars.ru:4443/ws'
+const URI = 'sip:200@gippars.ru'
+const LOGIN = '200'
+const PASSWORD = 'Hatr8Qhb!h122Qr'
+const WS_SERVER = 'wss://gippars.ru:4443/ws'
 
-// UserAgent delegate
-const delegate = {
-    onConnect: () => {
-        console.log('Connect...')
+import { Web } from "sip.js";
+const audio = new Audio()
+
+
+// Options for SimpleUser
+const options = {
+    aor: URI,
+    delegate,
+    media: {
+        constraints: {
+            audio: true,
+            video: false
+        },
+        remote: { audio }
     },
-    onDisconnect: (error) => {
-        console.log('Disconnect: ', { error })
-    },
+    userAgentOptions: {
+        authorizationUsername: LOGIN,
+        authorizationPassword: PASSWORD,
+        userAgentString: 'BaltAssistanсe CallCenter 0.0.1',
+        logBuiltinEnabled: false, // отключаю логирование
+        logConfiguration: false,
+        // sessionDescriptionHandlerFactoryOptions: {
+        //     iceGatheringTimeout: 500, //currently, the smallest allowed value
+        //     peerConnectionConfiguration: {
+        //         iceServers: []
+        //     }
+        // }
 
-    onInvite: (invitation) => {
-        console.log('Ivitation...', { invitation })
-    },
-
-    onMessage: (message) => {
-        console.log('Message ', { message })
-    },
-
-    onNotify: (notification) => {
-        console.log('Notify ', { notification })
     }
 }
 
-// Моя звонилка
-const phone = new MySipClient({
-    uri,
-    login,
-    password,
-    server,
-    delegate
-})
+
+// Construct a SimpleUser instance
+const simpleUser = new Web.SimpleUser(WS_SERVER, options);
+
+// Connect to server and place call
+simpleUser.connect()
 
 function call(number) {
-    phone.call(`sip:${number}@gippars.ru`)
+    simpleUser.call(`sip:${number}@gippars.ru`, {
+        sessionDescriptionHandlerOptions: {
+            constraints: { audio: true, video: false }
+        },
+        inviteWithoutSdp: false,
+        iceCheckingTimeout: 500
+    })
 }
 function terminate() {
-    phone.hangUp()
+    simpleUser.hangup()
 }
 function accept() {
-  phone.answer()
+  simpleUser.answer({
+    sessionDescriptionHandlerOptions: {
+        constraints: { audio: true, video: false}
+    }
+  })
 }
 
-phone.start().then(async () => phone.register())
 </script>
 
 <template>
