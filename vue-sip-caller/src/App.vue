@@ -8,35 +8,13 @@ const login = '200'
 const password = 'Hatr8Qhb!h122Qr'
 const server = 'wss://gippars.ru:4443/ws'
 
-// UserAgent delegate
-const delegate = {
-    onConnect: () => {
-        console.log('Connect...')
-    },
-    onDisconnect: (error) => {
-        console.log('Disconnect: ', { error })
-    },
-
-    onInvite: (invitation) => {
-        console.log('Ivitation...', { invitation })
-    },
-
-    onMessage: (message) => {
-        console.log('Message ', { message })
-    },
-
-    onNotify: (notification) => {
-        console.log('Notify ', { notification })
-    }
-}
 
 // Моя звонилка
 const phone = new MySipClient({
     uri,
     login,
     password,
-    server,
-    delegate
+    server
 })
 
 function call(number) {

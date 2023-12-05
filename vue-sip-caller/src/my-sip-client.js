@@ -11,9 +11,33 @@ class MySipClient {
     _userAgentOptions
 
     constructor(options) {
-        const { uri, login, password, server, delegate } = options
+        const { uri, login, password, server } = options
         this._uri = UserAgent.makeURI(uri)
         this._constraints = { audio: true, video: false }
+
+        // UserAgent delegate
+        const delegate = {
+            onConnect: () => {
+                console.log('Connect...')
+            },
+            onDisconnect: (error) => {
+                console.log('Disconnect: ', { error })
+            },
+
+            onInvite: (invitation) => {
+                this.onIncomingCall(invitation)
+                console.log('Invitation...', { invitation })
+            },
+
+            onMessage: (message) => {
+                console.log('Message ', { message })
+            },
+
+            onNotify: (notification) => {
+                console.log('Notify ', { notification })
+            }
+        }
+
         // UserAgent Options
         this._userAgentOptions = {
             authorizationPassword: password,
@@ -24,17 +48,21 @@ class MySipClient {
             userAgentString: 'BaltAssistanсe CallCenter 0.0.1',
             logBuiltinEnabled: false, // отключаю логирование
             logConfiguration: false,
-            sessionDescriptionHandlerFactoryOptions: {
-                iceGatheringTimeout: 1000,
-                peerConnectionConfiguration: {
-                    iceServers: []
-                }
-            }
+            // sessionDescriptionHandlerFactoryOptions: {
+            //     iceGatheringTimeout: 1000,
+            //     peerConnectionConfiguration: {
+            //         iceServers: []
+            //     }
+            // }
         }
 
         this._mediaElement = new Audio()
 
         this._userAgent = new UserAgent(this._userAgentOptions)
+        this._userAgent.delegate.onInvite = (invitation) => {
+            //this._userAgent.delegate.onInvite(invitation)
+            this.onIncomingCall(invitation)
+        }
     }
 
     async start() {
@@ -64,18 +92,14 @@ class MySipClient {
         this._mediaElement.pause()
     }
 
-    onInvite(invitation) {
-        console.log('Invite...', { invitation })
+    onIncomingCall(invitation) {
+        console.log('Incoming call...', { invitation })
+        console.log(invitation.state)
         this._session = invitation
 
-        invitation.stateChange.addListener((state) => {
+        this._session.stateChange.addListener((state) => {
+            console.log('state changed...')
             this.onSessionStateCange(invitation, state)
-        })
-
-        this._session.accept({
-            sessionDescriptionHandlerOptions: {
-                constraints: this._constraints
-            }
         })
     }
 
@@ -90,6 +114,7 @@ class MySipClient {
                 break
             case SessionState.Established:
                 console.log('Session established...')
+                console.log({session})
                 this._setupRemoteMedia(session)
                 break
             case SessionState.Terminating:
@@ -102,7 +127,6 @@ class MySipClient {
             default:
                 throw new Error('Unknown session state.')
         }
-        //invitation.accept()
     }
     hangUp() {
         if (!this._session) {
@@ -135,7 +159,7 @@ class MySipClient {
 
         const inviter = new Inviter(this._userAgent, target, {
             sessionDescriptionHandlerOptions: {
-                constraints: this.constraints
+                constraints: this._constraints
             }
         })
 
@@ -148,13 +172,17 @@ class MySipClient {
         })
     }
     answer() {
+        if (!this._session) {
+            console.log('Session undefined')
+            return
+        }
+        console.log(this._session?.state)
         const options = {
             sessionDescriptionHandlerOptions: {
                 constraints: this._constraints
             }
         }
-
-        this._sessionIn.accept(options)
+        this._session.accept(options)
     }
 }
 
