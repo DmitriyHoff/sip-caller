@@ -1,6 +1,5 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import MySipClient from './my-sip-client'
 
 const uri = 'sip:200@gippars.ru'
@@ -40,13 +39,14 @@ phone.start().then(async () => phone.register())
     </header>
 
     <main>
-        <TheWelcome />
+        <!-- <TheWelcome /> -->
+        <button @click="call(600)">600 (Echo test)</button>
+        <button @click="call(202)">202 (Second account)</button>
+        <button @click="call(602)">602 (Re-call)</button>
+        <button @click="terminate()">TERMINATE</button>
+        <button @click="accept()">ACCEPT</button>
     </main>
-    <button @click="call(600)">600 (Echo test)</button>
-    <button @click="call(202)">202 (Second account)</button>
-    <button @click="call(602)">602 (Re-call)</button>
-    <button @click="terminate()">TERMINATE</button>
-    <button @click="accept()">ACCEPT</button>
+    
 </template>
 
 <style scoped>
