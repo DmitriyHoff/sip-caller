@@ -21,7 +21,8 @@
     "@electron-toolkit/utils": "^2.0.0",
     "electron-updater": "^6.1.1",
     "jssip": "^3.10.1",
-    "primevue": "^3.42.0"
+    "primevue": "^3.42.0",
+    "sip.js": "^0.21.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

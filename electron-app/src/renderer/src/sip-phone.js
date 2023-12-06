@@ -1,8 +1,9 @@
 import { UserAgent, Registerer, Inviter, SessionState } from 'sip.js'
 
-class MySipClient extends EventTarget {
+class SipPhone extends EventTarget {
+
     _session
-    _sessionIn
+    //_sessionIn
     _constraints
     _mediaElement
     _uri
@@ -194,4 +195,4 @@ class MySipClient extends EventTarget {
     }
 }
 
-export default MySipClient
+export default SipPhone

@@ -1,5 +1,6 @@
 <script setup>
 import Versions from './components/Versions.vue'
+import SipPhone from './sip-phone'
 
 </script>
 

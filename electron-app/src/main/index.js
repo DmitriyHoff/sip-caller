@@ -6,12 +6,11 @@ import icon from '../../resources/icon.png?asset'
 
 
 async function createWindow() {
-  const microphone = await systemPreferences.askForMediaAccess('microphone');
-    const camera = await systemPreferences.askForMediaAccess('camera');
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    
-    
+
+
     width: 900,
     height: 670,
     show: false,
