@@ -48,12 +48,19 @@ class MySipClient {
             userAgentString: 'BaltAssistanсe CallCenter 0.0.1',
             logBuiltinEnabled: false, // отключаю логирование
             logConfiguration: false,
-            // sessionDescriptionHandlerFactoryOptions: {
-            //     iceGatheringTimeout: 1000,
-            //     peerConnectionConfiguration: {
-            //         iceServers: []
-            //     }
-            // }
+            sessionDescriptionHandlerFactoryOptions: {
+                iceGatheringTimeout: 1000,
+                peerConnectionConfiguration: {
+                    iceServers: [
+                        {
+                            urls: ['stun:stun.gippars.ru:3478'],
+                            username: '',
+                            credential: ''
+                        }
+                    ]
+                    //                     ['stun:stun.gippars.ru']
+                }
+            }
         }
 
         this._mediaElement = new Audio()
@@ -114,7 +121,7 @@ class MySipClient {
                 break
             case SessionState.Established:
                 console.log('Session established...')
-                console.log({session})
+                console.log({ session })
                 this._setupRemoteMedia(session)
                 break
             case SessionState.Terminating:

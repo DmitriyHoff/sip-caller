@@ -2,8 +2,8 @@
 import HelloWorld from './components/HelloWorld.vue'
 import MySipClient from './my-sip-client'
 
-const uri = 'sip:200@gippars.ru'
-const login = '200'
+const uri = 'sip:202@gippars.ru'
+const login = '202'
 const password = 'Hatr8Qhb!h122Qr'
 const server = 'wss://gippars.ru:4443/ws'
 
@@ -41,7 +41,7 @@ phone.start().then(async () => phone.register())
     <main>
         <!-- <TheWelcome /> -->
         <button @click="call(600)">600 (Echo test)</button>
-        <button @click="call(202)">202 (Second account)</button>
+        <button @click="call(200)">200 (Second account)</button>
         <button @click="call(602)">602 (Re-call)</button>
         <button @click="terminate()">TERMINATE</button>
         <button @click="accept()">ACCEPT</button>
