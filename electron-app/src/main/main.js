@@ -1,30 +1,19 @@
 // билиотеки
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-import MySipClient from './mySipClient'
+
 
 // окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'
 import IncomingCallWindow from './windowIncomingCall'
 
-// Параметры SIP
-const uri = 'sip:202@gippars.ru'
-const login = '202'
-const password = 'Hatr8Qhb!h122Qr'
-const server = 'wss://gippars.ru:4443/ws'
-
 const mainWindow = new MainWindow()
 const loginWindow = new LoginWindow()
 const incomingCallWindow = new IncomingCallWindow()
 
 let isLoggedIn = false
-const mySipClient = new MySipClient({
-  uri,
-  login,
-  password,
-  server
-})
+
 
 const showWindow = (win) => win.show()
 // mainWindow.events.on('ready-to-show', showWindow)
@@ -59,8 +48,6 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.on('userLogin', async (event, params) => {
-    await mySipClient.start()
-    await mySipClient.register()
     isLoggedIn = true
     loginWindow.browserWindow.close()
     mainWindow.show()
