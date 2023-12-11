@@ -5,6 +5,7 @@
   "main": "./out/main/main.js",
   "author": "example.com",
   "homepage": "https://www.electronjs.org",
+  "type": "commonjs",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -25,7 +26,8 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.42.0",
     "sass": "^1.69.5",
-    "sip.js": "^0.21.2"
+    "sip.js": "^0.21.2",
+    "ws": "^8.15.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

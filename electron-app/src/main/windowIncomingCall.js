@@ -1,15 +1,13 @@
 import Window from './window'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-/**
- * Класс окна авторизации
- */
-export default class LoginWindow extends Window {
-  _htmlPath = 'login.html'
+
+export default class IncomingCallWindow extends Window {
+  _htmlPath = 'incoming-call.html'
   constructor() {
     const browserWindowConstructorOptions = {
-      width: 400,
-      height: 600,
+      width: 450,
+      height: 70,
       show: false,
       autoHideMenuBar: true,
       ...(process.platform === 'linux' ? { icon } : {}),
@@ -17,9 +15,9 @@ export default class LoginWindow extends Window {
         preload: join(__dirname, '../preload/preload.js'),
         sandbox: false
       },
-      // useContentSize: true,
-      resizable: false,
-      fullscreenable: false
+      frame: false,
+      alwaysOnTop: true,
+      resizable: false
     }
     super(browserWindowConstructorOptions)
   }

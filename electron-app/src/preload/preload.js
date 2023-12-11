@@ -3,9 +3,15 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  callOnUserLogin: () => {
-    ipcRenderer.send('userLogin')
-  }
+  callOnUserLogin: (data) => {
+    ipcRenderer.send('userLogin', data)
+  },
+  phoneCallAcceted: () => {
+    ipcRenderer.send('phoneCallAccepted')
+  },
+  phoneCallCancelled: () => {
+    ipcRenderer.send('phoneCallCancelled')
+  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

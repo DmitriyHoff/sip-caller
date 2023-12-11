@@ -4,8 +4,6 @@ import { EventEmitter } from 'events'
 
 /**
  * Абстрактный класс окна
- *
- * @module Component
  * @abstract
  */
 export default class Window {
@@ -44,6 +42,9 @@ export default class Window {
     this._browserWindow.show()
   }
 
+  hide() {
+    this._browserWindow.hide()
+  }
   get events() {
     return this._emiter
   }

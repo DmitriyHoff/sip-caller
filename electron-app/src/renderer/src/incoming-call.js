@@ -1,7 +1,9 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import Login from './Login.vue'
+import IncomingCall from './IncomingCall.vue'
+
+import Avatar from 'primevue/avatar'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
@@ -12,11 +14,18 @@ import 'primevue/resources/themes/lara-light-green/theme.css'
 import 'primeflex/primeflex.scss'
 import 'primeicons/primeicons.css'
 
-const app = createApp(Login)
+var windowTopBar = document.createElement('div')
+windowTopBar.style.width = '100%'
+windowTopBar.style.height = '30px'
+windowTopBar.style.backgroundColor = '#000'
+windowTopBar.style.position = 'absolute'
+windowTopBar.style.top = windowTopBar.style.left = 0
+windowTopBar.style.webkitAppRegion = 'drag'
+windowTopBar.style.opacity = 0
+document.body.appendChild(windowTopBar)
+const app = createApp(IncomingCall)
 app.use(PrimeVue)
 
-app.component('InputText', InputText)
 app.component('Button', Button)
-app.component('Checkbox', Checkbox)
-
+app.component('Avatar', Avatar)
 app.mount('#app')

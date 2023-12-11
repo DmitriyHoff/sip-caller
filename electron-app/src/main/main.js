@@ -1,13 +1,33 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+// билиотеки
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+import MySipClient from './mySipClient'
 
+// окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'
+import IncomingCallWindow from './windowIncomingCall'
+
+// Параметры SIP
+const uri = 'sip:202@gippars.ru'
+const login = '202'
+const password = 'Hatr8Qhb!h122Qr'
+const server = 'wss://gippars.ru:4443/ws'
 
 const mainWindow = new MainWindow()
 const loginWindow = new LoginWindow()
+const incomingCallWindow = new IncomingCallWindow()
+
+let isLoggedIn = false
+const mySipClient = new MySipClient({
+  uri,
+  login,
+  password,
+  server
+})
+
 const showWindow = (win) => win.show()
-mainWindow.events.on('ready-to-show', showWindow)
+// mainWindow.events.on('ready-to-show', showWindow)
 loginWindow.events.on('ready-to-show', showWindow)
 
 // This method will be called when Electron has finished
@@ -24,20 +44,28 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // инициализация всех окон
   mainWindow.init()
   loginWindow.init()
+  incomingCallWindow.init()
 
-  app.on('activate', function () {
+  app.on('activate', async function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
-      mainWindow.show()
-      loginWindow.show()
+      if (isLoggedIn) mainWindow.init()
+      else loginWindow.init()
     }
   })
 
-  ipcMain.on('userLogin', (event, params) => {
-    console.log('login button clicked!')
+  ipcMain.on('userLogin', async (event, params) => {
+    await mySipClient.start()
+    await mySipClient.register()
+    isLoggedIn = true
+    loginWindow.browserWindow.close()
+    mainWindow.show()
+    incomingCallWindow.show()
+    console.log({ params })
   })
 })
 

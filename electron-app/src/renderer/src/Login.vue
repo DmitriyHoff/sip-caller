@@ -1,5 +1,10 @@
 <script setup>
+import { ref } from 'vue'
 const { callOnUserLogin } = window.api
+
+const login = ref(null)
+const password = ref(null)
+const checked = ref(null)
 </script>
 
 <template>
@@ -11,11 +16,11 @@ const { callOnUserLogin } = window.api
     </div>
 
     <div class="h-auto">
-      <label for="email1" class="block text-900 font-medium mb-2">Логин</label>
-      <InputText id="email1" type="text" class="w-full mb-3" />
+      <label for="login1" class="block text-900 font-medium mb-2">Логин</label>
+      <InputText id="login1" v-model="login" type="text" class="w-full mb-3" />
 
       <label for="password1" class="block text-900 font-medium mb-2">Пароль</label>
-      <InputText id="password1" type="password" class="w-full mb-3" />
+      <InputText id="password1" v-model="password" type="password" class="w-full mb-3" />
 
       <div class="flex align-items-center justify-content-between mb-6">
         <div class="flex align-items-center">
@@ -24,12 +29,8 @@ const { callOnUserLogin } = window.api
         </div>
       </div>
 
-      <Button
-        label="Авторизоваться"
-        icon="pi pi-user"
-        class="w-full"
-        @click="(e) => callOnUserLogin()"
-      ></Button>
+      <Button label="Авторизоваться" icon="pi pi-user" class="w-full"
+        @click="(e) => callOnUserLogin({ login, password })"></Button>
     </div>
   </div>
 </template>
