@@ -7,49 +7,49 @@ import { EventEmitter } from 'events'
  * @abstract
  */
 export default class Window {
-  _browserWindow
-  _htmlPath
-  _emiter
-  _browserWindowConstructorOptions
-  constructor(browserWindowConstructorOptions) {
-    if (new.target === Window) {
-      throw new Error(`You cannot instantiate an abstract class Window`)
+    _browserWindow
+    _htmlPath
+    _emiter
+    _browserWindowConstructorOptions
+    constructor(browserWindowConstructorOptions) {
+        if (new.target === Window) {
+            throw new Error(`You cannot instantiate an abstract class Window`)
+        }
+        this._emiter = new EventEmitter()
+        this._browserWindowConstructorOptions = browserWindowConstructorOptions
     }
-    this._emiter = new EventEmitter()
-    this._browserWindowConstructorOptions = browserWindowConstructorOptions
-  }
-  async init() {
-    // Create the browser window.
-    this._browserWindow = new BrowserWindow(this._browserWindowConstructorOptions)
+    async init() {
+        // Create the browser window.
+        this._browserWindow = new BrowserWindow(this._browserWindowConstructorOptions)
 
-    this._browserWindow.on('ready-to-show', () => {
-      this._emiter.emit('ready-to-show', this)
-    })
+        this._browserWindow.on('ready-to-show', () => {
+            this._emiter.emit('ready-to-show', this)
+        })
 
-    this._browserWindow.webContents.setWindowOpenHandler((details) => {
-      shell.openExternal(details.url)
-      return { action: 'deny' }
-    })
+        this._browserWindow.webContents.setWindowOpenHandler((details) => {
+            shell.openExternal(details.url)
+            return { action: 'deny' }
+        })
 
-    if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
-      this._browserWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/${this._htmlPath}`)
-    } else {
-      this._browserWindow.loadFile(join(__dirname, `../renderer/${this._htmlPath}`))
+        if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
+            this._browserWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/${this._htmlPath}`)
+        } else {
+            this._browserWindow.loadFile(join(__dirname, `../renderer/${this._htmlPath}`))
+        }
     }
-  }
 
-  show() {
-    this._browserWindow.show()
-  }
+    show() {
+        this._browserWindow.show()
+    }
 
-  hide() {
-    this._browserWindow.hide()
-  }
-  get events() {
-    return this._emiter
-  }
+    hide() {
+        this._browserWindow.hide()
+    }
+    get events() {
+        return this._emiter
+    }
 
-  get browserWindow() {
-    return this._browserWindow
-  }
+    get browserWindow() {
+        return this._browserWindow
+    }
 }

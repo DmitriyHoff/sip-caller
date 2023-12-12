@@ -1,7 +1,7 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import Login from './Login.vue'
+import Login from './AppLogin.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'

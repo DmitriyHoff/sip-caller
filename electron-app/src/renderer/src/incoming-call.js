@@ -1,12 +1,10 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import IncomingCall from './IncomingCall.vue'
+import IncomingCall from './AppIncomingCall.vue'
 
 import Avatar from 'primevue/avatar'
-import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
-import Checkbox from 'primevue/checkbox'
 
 import './assets/css/normalize.css'
 import 'primevue/resources/themes/lara-light-green/theme.css'

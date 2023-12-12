@@ -1,7 +1,6 @@
 import { UserAgent, Registerer, Inviter, SessionState } from 'sip.js'
 
 class SipPhone extends EventTarget {
-
     _session
     //_sessionIn
     _constraints
@@ -11,34 +10,11 @@ class SipPhone extends EventTarget {
     _registerer
     _userAgentOptions
 
-    constructor(options) {
-        super();
+    constructor(options, delegate) {
+        super()
         const { uri, login, password, server } = options
         this._uri = UserAgent.makeURI(uri)
         this._constraints = { audio: true, video: false }
-
-        // UserAgent delegate
-        const delegate = {
-            onConnect: () => {
-                console.log('Connect...')
-            },
-            onDisconnect: (error) => {
-                console.log('Disconnect: ', { error })
-            },
-
-            onInvite: (invitation) => {
-                this.onIncomingCall(invitation)
-                console.log('Invitation...', { invitation })
-            },
-
-            onMessage: (message) => {
-                console.log('Message ', { message })
-            },
-
-            onNotify: (notification) => {
-                console.log('Notify ', { notification })
-            }
-        }
 
         // UserAgent Options
         this._userAgentOptions = {
@@ -51,7 +27,7 @@ class SipPhone extends EventTarget {
             logBuiltinEnabled: false, // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
-                iceGatheringTimeout: 1000,
+                iceGatheringTimeout: 500,
                 peerConnectionConfiguration: {
                     iceServers: [
                         {
@@ -60,7 +36,6 @@ class SipPhone extends EventTarget {
                             credential: ''
                         }
                     ]
-                    //                     ['stun:stun.gippars.ru']
                 }
             }
         }
