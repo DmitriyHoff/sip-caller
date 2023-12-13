@@ -1,8 +1,8 @@
 <script setup>
 import TabMenu from 'primevue/tabmenu'
-import SipPhone from './sip-phone'
+import SipPhone from '../services/sip-phone'
 import { ref } from 'vue'
-import router from './router'
+import router from '../router'
 
 const items = ref([
     {

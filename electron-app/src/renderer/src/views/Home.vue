@@ -9,16 +9,16 @@ import MessagesTable from '../components/MessagesTable.vue'
             style="min-height: 400px"
             class="flex w-full h-full align-items-center justify-content-center overflow-auto"
         >
-            <Splitter class="flex h-full border-noround overflow-hidden">
+            <Splitter class="flex h-full border-noround">
                 <SplitterPanel class="flex h-full w-full">
                     <RefidPanel />
                 </SplitterPanel>
-                <SplitterPanel style="min-width: 300px" class="flex oveflow-y-scroll">
+                <SplitterPanel style="min-width: 300px" class="flex h-full w-full oveflow-y-auto">
                     <ContactList />
                 </SplitterPanel>
             </Splitter>
         </SplitterPanel>
-        <SplitterPanel class="flex align-items-center justify-content-center">
+        <SplitterPanel style="min-height: 200px;" class="flex align-items-center justify-content-center overflow-y-auto">
             <MessagesTable />
         </SplitterPanel>
     </Splitter>

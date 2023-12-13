@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import App from './AppMain.vue'
+
 import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
 import Button from 'primevue/button'
@@ -10,9 +10,11 @@ import Textarea from 'primevue/textarea'
 import SplitButton from 'primevue/splitbutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import router from './router'
 
-import './assets/css/normalize.css'
+import router from '../router'
+import App from '../layouts/AppMain.vue'
+
+import '../assets/css/normalize.css'
 import 'primevue/resources/themes/lara-light-green/theme.css'
 //import 'primevue/resources/themes/lara-dark-green/theme.css'
 import 'primeflex/primeflex.scss'

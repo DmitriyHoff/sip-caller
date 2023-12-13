@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-const messages = ref(null)
+import messagesList from '../data/messagesList'
+const messages = ref(messagesList)
 const selectedMessage = ref(null)
 </script>
 <template>
@@ -10,6 +11,8 @@ const selectedMessage = ref(null)
         selection-mode="single"
         data-key="id"
         class="p-datatable-sm text-xs w-full h-full"
+        scrollable
+        scroll-height="100%"
     >
         <Column field="id" header="#"></Column>
         <Column field="type" header="Тип"></Column>

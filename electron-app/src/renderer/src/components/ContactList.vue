@@ -5,7 +5,7 @@ import ColumnGroup from 'primevue/columngroup' // optional
 import Row from 'primevue/row' // optional
 import Tag from 'primevue/tag'
 import { ref } from 'vue'
-import contacts from '../service/contactsList.js'
+import contacts from '../data/contactsList.js'
 const products = ref(contacts)
 products.value.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
 const selectedUser = ref(null)
@@ -17,12 +17,14 @@ const selectedUser = ref(null)
         :value="products"
         selection-mode="single"
         data-key="id"
-        class="p-datatable-sm text-xs w-full h-full"
+        class="p-datatable-sm text-xs w-full overflow-y-auto"
         row-group-mode="subheader"
         group-rows-by="status.text"
         sort-mode="single"
         sort-field="status.id"
         :sort-order="1"
+        scrollable
+        scroll-height="100%"
     >
         <Column field="status.text" header=""></Column>
         <Column field="status-icon" header=" ">

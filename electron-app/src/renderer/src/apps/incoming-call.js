@@ -1,12 +1,12 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import IncomingCall from './AppIncomingCall.vue'
+import IncomingCall from '../layouts/AppIncomingCall.vue'
 
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 
-import './assets/css/normalize.css'
+import '../assets/css/normalize.css'
 import 'primevue/resources/themes/lara-light-green/theme.css'
 //import 'primevue/resources/themes/lara-dark-green/theme.css'
 import 'primeflex/primeflex.scss'

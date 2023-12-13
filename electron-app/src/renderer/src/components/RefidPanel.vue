@@ -24,7 +24,7 @@ const splitButtonItems = [
 ]
 </script>
 <template>
-    <div class="surface-card shadow-2 p-3 pt-6 border-round w-full h-full">
+    <div class="surface-card shadow-2 p-3 pt-6 border-round w-full h-full overflow-y-auto">
         <div class="flex flex-column gap-5 text-sm w-full h-full">
             <div class="flex align-items-center justify-content-between gap-3">
                 <span class="flex-grow-1 p-float-label">
@@ -79,7 +79,7 @@ const splitButtonItems = [
                     <label for="rememberme1">Конфиденциально</label>
                 </div>
 
-                <Button label="Сохранить" icon="pi pi-user" class="flex"></Button>
+                <Button label="Сохранить" icon="pi pi-check" class="flex"></Button>
             </div>
         </div>
     </div>

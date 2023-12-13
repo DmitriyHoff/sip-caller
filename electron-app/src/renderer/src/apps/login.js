@@ -1,12 +1,12 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import Login from './AppLogin.vue'
+import Login from '../layouts/AppLogin.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 
-import './assets/css/normalize.css'
+import '../assets/css/normalize.css'
 import 'primevue/resources/themes/lara-light-green/theme.css'
 //import 'primevue/resources/themes/lara-dark-green/theme.css'
 import 'primeflex/primeflex.scss'
