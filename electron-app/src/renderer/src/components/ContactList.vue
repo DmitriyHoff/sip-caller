@@ -1,11 +1,9 @@
 <script setup>
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import ColumnGroup from 'primevue/columngroup' // optional
-import Row from 'primevue/row' // optional
-import Tag from 'primevue/tag'
 import { ref } from 'vue'
 import contacts from '../data/contactsList.js'
+
 const products = ref(contacts)
 products.value.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
 const selectedUser = ref(null)

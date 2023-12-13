@@ -10,7 +10,7 @@ const checked = ref(null)
 <template>
     <div class="surface-card p-4 shadow-2 border-noround w-full h-full lg:w-6">
         <div class="text-center mb-5">
-            <img src="./assets/logo.svg" alt="Image" height="80" class="mb-3" />
+            <img src="../assets/logo.svg" alt="Image" height="80" class="mb-3" />
             <div class="text-900 text-3xl font-medium mb-3">Добро пожаловать!</div>
             <span class="text-600 font-medium line-height-2">Войдите используя аккаунт Fregat</span>
         </div>

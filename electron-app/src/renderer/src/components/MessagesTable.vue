@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import messagesList from '../data/messagesList'
+
 const messages = ref(messagesList)
 const selectedMessage = ref(null)
 </script>
