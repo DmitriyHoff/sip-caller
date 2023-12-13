@@ -6,8 +6,8 @@ export default class MainWindow extends Window {
     _htmlPath = 'index.html'
     constructor() {
         const browserWindowConstructorOptions = {
-            width: 600,
-            height: 480,
+            width: 800,
+            height: 780,
             show: false,
             autoHideMenuBar: true,
             ...(process.platform === 'linux' ? { icon } : {}),
@@ -15,7 +15,9 @@ export default class MainWindow extends Window {
                 preload: join(__dirname, '../preload/preload.js'),
                 sandbox: false
             },
-            useContentSize: true
+            useContentSize: true,
+            minWidth: 800,
+            minHeight: 700
         }
         super(browserWindowConstructorOptions)
     }

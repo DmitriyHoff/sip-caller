@@ -1,19 +1,16 @@
 <script setup>
-import ContactList from './components/ContactList.vue'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
 import TabMenu from 'primevue/tabmenu'
 import SipPhone from './sip-phone'
 import { ref } from 'vue'
-// import { useToast } from 'primevue/usetoast'
+import router from './router'
 
-//const toast = //useToast()
 const items = ref([
     {
         label: 'Главная',
         icon: 'pi pi-home',
         command: () => {
             console.log('click menu 1!')
+            router.push({ name: 'home' })
         }
     },
     {
@@ -21,20 +18,21 @@ const items = ref([
         icon: 'pi pi-chart-line',
         command: () => {
             console.log('click menu 2!')
+            router.push({ name: 'stats' })
         }
     },
     {
         label: 'История',
         icon: 'pi pi-list',
         command: () => {
-            console.log('click menu 3!')
+            router.push({ name: 'history' })
         }
     },
     {
         label: 'Сообщения',
         icon: 'pi pi-inbox',
         command: () => {
-            console.log('click menu 4!')
+            router.push({ name: 'messages' })
         }
     }
 ])
@@ -93,26 +91,10 @@ phone.start().then(async () => phone.register())
 </script>
 
 <template>
-    <div class="card text-sm">
-        <TabMenu :model="items">
-            <!-- <template #item="{ item, props }">
-                <a v-bind="props.action" class="flex align-items-center gap-2">
-                    <img
-                        :alt="item.name"
-                        :src="`/images/avatar/${item.image}`"
-                        style="width: 32px"
-                    />
-                    <span class="font-bold">{{ item.label }}</span>
-                </a>
-            </template> -->
-        </TabMenu>
+    <div class="flex h-full w-full flex-column">
+        <div class="flex-none card text-sm">
+            <TabMenu :model="items" />
+        </div>
+        <router-view />
     </div>
-    <Splitter class="v-full h-full border-noround mb-5">
-        <SplitterPanel class="flex align-items-top justify-content-center">
-            <div>uyiuyiuyh</div>
-        </SplitterPanel>
-        <SplitterPanel class="flex align-items-stretch justify-content-stretch overflow-y-scroll">
-            <ContactList />
-        </SplitterPanel>
-    </Splitter>
 </template>

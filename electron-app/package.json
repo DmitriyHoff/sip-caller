@@ -27,6 +27,7 @@
         "primevue": "^3.42.0",
         "sass": "^1.69.5",
         "sip.js": "^0.21.2",
+        "vue-router": "^4.2.5",
         "ws": "^8.15.0"
     },
     "devDependencies": {

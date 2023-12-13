@@ -1,0 +1,25 @@
+<script setup>
+import ContactList from '../components/ContactList.vue'
+import RefidPanel from '../components/RefidPanel.vue'
+import MessagesTable from '../components/MessagesTable.vue'
+</script>
+<template>
+    <Splitter class="flex-grow-1 border-noround overflow-auto" layout="vertical">
+        <SplitterPanel
+            style="min-height: 400px"
+            class="flex w-full h-full align-items-center justify-content-center overflow-auto"
+        >
+            <Splitter class="flex h-full border-noround overflow-hidden">
+                <SplitterPanel class="flex h-full w-full">
+                    <RefidPanel />
+                </SplitterPanel>
+                <SplitterPanel style="min-width: 300px" class="flex oveflow-y-scroll">
+                    <ContactList />
+                </SplitterPanel>
+            </Splitter>
+        </SplitterPanel>
+        <SplitterPanel class="flex align-items-center justify-content-center">
+            <MessagesTable />
+        </SplitterPanel>
+    </Splitter>
+</template>

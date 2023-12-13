@@ -4,7 +4,7 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 module.exports = {
     parser: 'vue-eslint-parser',
     parserOptions: {
-        ecmaVersion: 2022,
+        ecmaVersion: 2022
         // parser: '@babel/eslint-parser',
         // parserOptions: {
         //     requireConfigFile: false,
@@ -14,7 +14,7 @@ module.exports = {
         // }
     },
     extends: [
-        'prettier',
+//        'prettier',
         'eslint:recommended',
         'plugin:vue/vue3-recommended',
         '@electron-toolkit',
@@ -23,5 +23,14 @@ module.exports = {
     rules: {
         'vue/require-default-prop': 'off',
         'vue/multi-word-component-names': 'off'
-    }
+    },
+    // options: {
+    //     'vue/no-reserved-component-names': [
+    //         'error',
+    //         {
+    //             disallowVueBuiltInComponents: false,
+    //             disallowVue3BuiltInComponents: false
+    //         }
+    //     ]
+    // }
 }
