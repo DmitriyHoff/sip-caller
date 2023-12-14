@@ -1,8 +1,12 @@
 <script setup>
 import TabMenu from 'primevue/tabmenu'
-import SipPhone from '../services/sip-phone'
 import { ref } from 'vue'
 import router from '../router'
+import { useSipStore } from '../stores/sipStore'
+
+// ✨
+const store = useSipStore()
+store.call(600)
 
 const items = ref([
     {
