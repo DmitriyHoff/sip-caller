@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import SipPhone from '../services/sip-phone'
 
-export const useSipStore = defineStore('alerts', {
-    // const { api } = window
+export const useSipStore = defineStore('alerts', () => {
+     const { api } = window
     // const sipOptions = {
     //     uri: 'sip:202@gippars.ru',
     //     login: '202',
