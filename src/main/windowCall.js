@@ -2,8 +2,8 @@ import Window from './window'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
-export default class IncomingCallWindow extends Window {
-    _htmlPath = 'incoming-call.html'
+export default class CallWindow extends Window {
+    _htmlPath = 'call.html'
     constructor() {
         const browserWindowConstructorOptions = {
             width: 450,

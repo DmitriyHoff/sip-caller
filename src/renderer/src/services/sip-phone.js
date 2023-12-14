@@ -1,8 +1,29 @@
 import { UserAgent, Registerer, Inviter, SessionState } from 'sip.js'
 
+const RegistererState = {
+    Initial: 'Initial',
+    Registered: 'Registered',
+    Unregistered: 'Unregistered',
+    Terminated: 'Terminated'
+}
+
+const TransportState = {
+    /** The `connect()` method was called. */
+    Connecting: 'Connecting',
+
+    /** The `connect()` method resolved. */
+    Connected: 'Connected',
+    /** The `disconnect()` method was called. */
+    Disconnecting: 'Disconnecting',
+    /**
+     * The `connect()` method was rejected, or
+     * the `disconnect()` method completed, or
+     * network connectivity was lost.
+     */
+    Disconnected: 'Disconnected'
+}
 class SipPhone extends EventTarget {
     _session
-    //_sessionIn
     _constraints
     _mediaElement
     _uri
@@ -24,7 +45,7 @@ class SipPhone extends EventTarget {
             uri: this._uri,
             delegate,
             userAgentString: 'BaltAssistanсe CallCenter 0.0.1',
-            logBuiltinEnabled: false, // отключаю логирование
+            logBuiltinEnabled: true, // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
                 iceGatheringTimeout: 500,
@@ -43,19 +64,26 @@ class SipPhone extends EventTarget {
         this._mediaElement = new Audio()
 
         this._userAgent = new UserAgent(this._userAgentOptions)
+        this._registerer = new Registerer(this._userAgent)
         this._userAgent.delegate.onInvite = (invitation) => {
             //this._userAgent.delegate.onInvite(invitation)
             this.onIncomingCall(invitation)
         }
     }
 
-    async start() {
-        await this._userAgent.start()
+    start() {
+        return this._userAgent.start()
     }
-
-    async register() {
-        this._registerer = new Registerer(this._userAgent)
-        await this._registerer.register()
+    /** Send `REGISTER` request */
+    register() {
+        console.log('>REGISTERER: ', this._registerer.state)
+        this._registerer.stateChange.addListener((event) => {
+            console.log({ event })
+        })
+        this._registerer.register().catch((err) => {
+            console.log({ err })
+        })
+        //return this._registerer.register()
     }
 
     _setupRemoteMedia(invitation) {
@@ -167,6 +195,9 @@ class SipPhone extends EventTarget {
             }
         }
         this._session.accept(options)
+    }
+    get registerer() {
+        return this._registerer
     }
 }
 

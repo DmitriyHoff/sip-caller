@@ -1,10 +1,15 @@
 <script setup>
 import { ref } from 'vue'
-const { sendLogin } = window.api
 
 const login = ref(null)
 const password = ref(null)
 const checked = ref(null)
+
+const loading = ref(false)
+function onClick(e) {
+    loading.value = !loading.value
+    window.api.sendLogin({ login: login.value, password: password.value })
+}
 </script>
 
 <template>
@@ -33,13 +38,24 @@ const checked = ref(null)
                     <label for="rememberme1">Запомнить пароль</label>
                 </div>
             </div>
-
             <Button
-                label="Авторизоваться"
-                icon="pi pi-user"
-                class="w-full"
-                @click="(e) => sendLogin({ login, password })"
-            ></Button>
+                class="flex w-full align-items-center justify-content-center gap-3 text-lg"
+                plain
+                text
+                raised
+                @click="(e) => onClick(e)"
+            >
+                <div class="w-2rem h-2rem">
+                    <ProgressSpinner
+                        v-show="loading"
+                        class="m-0 mr-3 w-full h-full"
+                        stroke-width="4"
+                        aria-label="Loading"
+                    />
+                </div>
+
+                <span class="mr-6">Авторизоваться</span>
+            </Button>
         </div>
     </div>
 </template>

@@ -6,13 +6,13 @@ export const useSipStore = defineStore('phone', () => {
     const sipOptions = {
         uri: 'sip:202@gippars.ru',
         login: '202',
-        password: 'Hatr8Qhb!h122Qr',
+        password: 'Hatr8Qhb!h122Qr~',
         server: 'wss://gippars.ru:4443/ws'
     }
     const delegate = {
         onConnect: () => {
             api.sendSipConnect()
-            console.log('Connect...')
+            console.log('Connect -->>>')
         },
         onDisconnect: (error) => {
             api.sendSipDisconnect(error)
@@ -30,6 +30,12 @@ export const useSipStore = defineStore('phone', () => {
         onNotify: (notification) => {
             api.sendSipNotify(notification)
             console.log('Notify ', { notification })
+        },
+        onRegister: (register) => {
+            console.log('Register ->>> ', { register })
+        },
+        onRegisterRequest: (reg) => {
+            console.log('RegisterRequest ->>>', { reg })
         }
     }
     // Моя звонилка
@@ -45,6 +51,12 @@ export const useSipStore = defineStore('phone', () => {
     function accept() {
         phone.answer()
     }
-    phone.start().then(async () => phone.register())
-    return { call, terminate, accept }
+    async function start() {
+        return phone.start()
+    }
+    async function register() {
+        return phone.register()
+    }
+    // phone.start().then(async () => phone.register())
+    return { start, register, call, terminate, accept }
 })

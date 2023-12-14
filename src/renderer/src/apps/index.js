@@ -11,6 +11,8 @@ import Textarea from 'primevue/textarea'
 import SplitButton from 'primevue/splitbutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+//import ProgressSpinner from 'primevue/progressspinner'
+import ProgressBar from 'primevue/progressbar'
 
 import router from '../router'
 import App from '../layouts/AppMain.vue'
@@ -37,5 +39,6 @@ app.component('Textarea', Textarea)
 app.component('SplitButton', SplitButton)
 app.component('DataTable', DataTable)
 app.component('Column', Column)
-
+app.component('ProgressBar', ProgressBar)
+//app.component('ProgressSpinner', ProgressSpinner)
 app.mount('#app')

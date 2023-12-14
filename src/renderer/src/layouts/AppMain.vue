@@ -3,10 +3,28 @@ import TabMenu from 'primevue/tabmenu'
 import { ref } from 'vue'
 import router from '../router'
 import { useSipStore } from '../stores/sipStore'
-
+import { timeout } from '../utils'
 // ✨
 const store = useSipStore()
-store.call(600)
+const login = ref(null)
+const pass = ref(null)
+
+// попытка авторизоваться
+window.api.onLoginAuthorize(async (data) => {
+    login.value = data.login
+    pass.value = data.password
+    await timeout(3000)
+    try {
+        await store.start()
+        console.log('connected...')
+        await timeout(10000)
+        await store.register()
+        console.log('registered...')
+    } catch (err) {
+        console.log({ err })
+    }
+})
+// store.call(600)
 
 const items = ref([
     {

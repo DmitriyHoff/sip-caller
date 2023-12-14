@@ -3,6 +3,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
+    sendTest: () => {
+        ipcRenderer.send('test')
+    },
     sendLogin: (data) => {
         ipcRenderer.send('login', data)
     },
@@ -33,6 +36,8 @@ const api = {
     sendSipEndCall: () => {
         ipcRenderer.send('sip-end-call')
     },
+    onLoginAuthorize: (callback) =>
+        ipcRenderer.on('loginWindow:login', (_event, value) => callback(value))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

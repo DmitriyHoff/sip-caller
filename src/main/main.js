@@ -1,15 +1,14 @@
 // билиотеки
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-
 // окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'
-import IncomingCallWindow from './windowIncomingCall'
+import CallWindow from './windowCall'
 
 const mainWindow = new MainWindow()
 const loginWindow = new LoginWindow()
-const incomingCallWindow = new IncomingCallWindow()
+const callWindow = new CallWindow()
 
 let isLoggedIn = false
 
@@ -31,7 +30,7 @@ app.whenReady().then(async () => {
     // инициализация всех окон
     mainWindow.init()
     loginWindow.init()
-    incomingCallWindow.init()
+    callWindow.init()
 
     app.on('activate', async function () {
         // On macOS it's common to re-create a window in the app when the
@@ -42,12 +41,13 @@ app.whenReady().then(async () => {
         }
     })
 
+    ipcMain.on('test', async (event, params) => {
+        console.log('main:test')
+    })
     ipcMain.on('login', async (event, params) => {
-        isLoggedIn = true
-        loginWindow.browserWindow.close()
-        mainWindow.show()
-        incomingCallWindow.show()
+        console.log('main:login')
         console.log({ params })
+        mainWindow.browserWindow.webContents.send('loginWindow:login',  params )
     })
 
     ipcMain.on('phone-accept-click', async () => {
@@ -57,6 +57,9 @@ app.whenReady().then(async () => {
         console.log('phone-cancel-click')
     })
     ipcMain.on('sip-connect', () => {
+        isLoggedIn = true
+        loginWindow.browserWindow.close()
+        mainWindow.show()
         console.log('sip-connect')
     })
     ipcMain.on('sip-disconnect', () => {
@@ -64,6 +67,8 @@ app.whenReady().then(async () => {
     })
     ipcMain.on('sip-begin-call', () => {
         console.log('sip-begin-call')
+        callWindow.webContents.send('sip:begin-call')
+        callWindow.show()
     })
     ipcMain.on('sip-end-call', () => {
         console.log('sip-end-call')
