@@ -1,6 +1,7 @@
 // билиотеки
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+
 // окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'

@@ -112,6 +112,9 @@ const items = ref([
 </template>
 
 <style>
+#app {
+    font-family: 'Roboto';
+}
 .p-component,
 .p-inputtext {
     font-family: inherit;
