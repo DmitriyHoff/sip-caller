@@ -15,16 +15,6 @@ export default defineConfig({
                 '@renderer': resolve('src/renderer/src')
             }
         },
-        plugins: [vue()]
-        // plugins: [
-        //     vue({
-        //         template: {
-        //             compilerOptions: {
-        //                 // treat all tags with a dash as custom elements
-        //                 isCustomElement: (tag) => tag.includes('ProgressSpinner')
-        //             }
-        //         }
-        //     })
-        // ]
+        plugins: [vue()],
     }
 })

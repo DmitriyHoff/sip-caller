@@ -103,10 +103,17 @@ const items = ref([
 </script>
 
 <template>
-    <div class="flex h-full w-full flex-column">
+    <div class="flex h-full w-full flex-column font-roboto">
         <div class="flex-none card text-sm">
             <TabMenu :model="items" />
         </div>
         <router-view />
     </div>
 </template>
+
+<style>
+.p-component,
+.p-inputtext {
+    font-family: inherit;
+}
+</style>

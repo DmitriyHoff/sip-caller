@@ -53,10 +53,11 @@ app.whenReady().then(async () => {
     ipcMain.on('login-response', async (event, params) => {
         console.log('electron: login-response', params)
 
-        loginWindow.browserWindow.webContents.send('login-response', params)
         if (!params.error) {
             loginWindow.browserWindow.close()
             mainWindow.show()
+        } else {
+            loginWindow.browserWindow.webContents.send('login-response', params)
         }
     })
     ipcMain.on('phone-accept-click', async () => {
