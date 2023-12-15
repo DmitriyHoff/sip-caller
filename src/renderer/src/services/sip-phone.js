@@ -22,6 +22,29 @@ const TransportState = {
      */
     Disconnected: 'Disconnected'
 }
+
+class ConnectionError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = 'ConnectionError'
+        this.text = 'Ошибка соединения с АТС'
+    }
+}
+
+class RegistrationError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = 'RegisterError'
+        this.text = 'Ошибка регистрации в АТС'
+    }
+}
+
+// const registererRegisterOptions = {
+//     /** See `core` API. */
+//     requestDelegate: outgoingRequestDelegate
+//     /** See `core` API. */
+//     //requestOptions?: RequestOptions;
+// }
 class SipPhone extends EventTarget {
     _session
     _constraints
@@ -30,8 +53,10 @@ class SipPhone extends EventTarget {
     _userAgent
     _registerer
     _userAgentOptions
+    _registererStateChangeListener
+    _responseListener
 
-    constructor(options, delegate) {
+    constructor(options, delegate, responseListener, registererStateChangeListener) {
         super()
         const { uri, login, password, server } = options
         this._uri = UserAgent.makeURI(uri)
@@ -64,26 +89,87 @@ class SipPhone extends EventTarget {
         this._mediaElement = new Audio()
 
         this._userAgent = new UserAgent(this._userAgentOptions)
-        this._registerer = new Registerer(this._userAgent)
+
+        this._registererStateChangeListener = registererStateChangeListener
+
         this._userAgent.delegate.onInvite = (invitation) => {
             //this._userAgent.delegate.onInvite(invitation)
             this.onIncomingCall(invitation)
         }
+        this._responseListener = responseListener
     }
 
-    start() {
-        return this._userAgent.start()
+    async start() {
+        try {
+            console.log('UserAgentState: ', this._userAgent.state)
+            await this._userAgent.start()
+        } catch (error) {
+            this._userAgent.stop()
+            throw new ConnectionError(error.message)
+        }
     }
     /** Send `REGISTER` request */
-    register() {
-        console.log('>REGISTERER: ', this._registerer.state)
-        this._registerer.stateChange.addListener((event) => {
-            console.log({ event })
+    async register() {
+        this._registerer = new Registerer(this._userAgent)
+        this._registerer.stateChange.addListener((state) => {
+            this._registererStateChangeListener(state)
         })
-        this._registerer.register().catch((err) => {
-            console.log({ err })
-        })
-        //return this._registerer.register()
+
+        try {
+            console.log('RegistererState: ', this._registerer.state)
+            const registererRegisterOptions = {
+                /** See `core` API. */
+                requestDelegate: {
+                    /**
+                     * Received a 2xx positive final response to this request.
+                     * @param response - Incoming response.
+                     */
+                    onAccept: (response) => {
+                        console.log('Accept: ', { response })
+                        this._responseListener(response)
+                    },
+
+                    /**
+                     * Received a 1xx provisional response to this request. Excluding 100 responses.
+                     * @param response - Incoming response.
+                     */
+                    onProgress: (response) => {
+                        console.log('OnProgress: ', { response })
+                        this._responseListener(response)
+                    },
+
+                    /**
+                     * Received a 3xx negative final response to this request.
+                     * @param response - Incoming response.
+                     */
+                    onRedirect: (response) => {
+                        console.log('onRedirect: ', { response })
+                        this._responseListener(response)
+                    },
+
+                    /**
+                     * Received a 4xx, 5xx, or 6xx negative final response to this request.
+                     * @param response - Incoming response.
+                     */
+                    onReject: (response) => {
+                        console.log('onReject: ', { response })
+                        this._responseListener(response)
+                    },
+
+                    /**
+                     * Received a 100 provisional response.
+                     * @param response - Incoming response.
+                     */
+                    onTrying: (response) => {
+                        console.log('onTrying: ', { response })
+                    }
+                }
+            }
+            console.log(registererRegisterOptions)
+            await this._registerer.register(registererRegisterOptions)
+        } catch (err) {
+            throw new RegistrationError(err)
+        }
     }
 
     _setupRemoteMedia(invitation) {
@@ -201,4 +287,4 @@ class SipPhone extends EventTarget {
     }
 }
 
-export default SipPhone
+export { SipPhone, ConnectionError, RegistrationError }

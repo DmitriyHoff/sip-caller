@@ -6,10 +6,23 @@ const password = ref(null)
 const checked = ref(null)
 
 const loading = ref(false)
-function onClick(e) {
-    loading.value = !loading.value
-    window.api.sendLogin({ login: login.value, password: password.value })
+const errorMessage = ref(null)
+const hasError = ref(false)
+
+function onClick() {
+    loading.value = true
+    window.api.sendLoginRequest({
+        login: login.value,
+        password: password.value
+    })
+    hasError.value = false
 }
+window.api.onLoginResponse((response) => {
+    console.log('response', response)
+    loading.value = false
+    errorMessage.value = response.error.title
+    hasError.value = true
+})
 </script>
 
 <template>
@@ -20,7 +33,7 @@ function onClick(e) {
             <span class="text-600 font-medium line-height-2">Войдите используя аккаунт Fregat</span>
         </div>
 
-        <div class="h-auto">
+        <div class="flex flex-column h-auto">
             <label for="login1" class="block text-900 font-medium mb-2">Логин</label>
             <InputText id="login1" v-model="login" type="text" class="w-full mb-3" />
 
@@ -38,24 +51,27 @@ function onClick(e) {
                     <label for="rememberme1">Запомнить пароль</label>
                 </div>
             </div>
-            <Button
-                class="flex w-full align-items-center justify-content-center gap-3 text-lg"
-                plain
-                text
-                raised
-                @click="(e) => onClick(e)"
-            >
-                <div class="w-2rem h-2rem">
-                    <ProgressSpinner
-                        v-show="loading"
-                        class="m-0 mr-3 w-full h-full"
-                        stroke-width="4"
-                        aria-label="Loading"
-                    />
-                </div>
+            <div class="flex flex-column align-items-center gap-2">
+                <Button
+                    class="flex w-full align-items-center justify-content-center gap-3 text-lg"
+                    plain
+                    text
+                    raised
+                    @click="(e) => onClick(e)"
+                >
+                    <div class="w-2rem h-2rem">
+                        <ProgressSpinner
+                            v-show="loading"
+                            class="m-0 mr-3 w-full h-full"
+                            stroke-width="4"
+                            aria-label="Loading"
+                        />
+                    </div>
 
-                <span class="mr-6">Авторизоваться</span>
-            </Button>
+                    <span class="mr-6">Авторизоваться</span>
+                </Button>
+                <span v-if="hasError" class="text-xs text-red-500">{{ errorMessage }}</span>
+            </div>
         </div>
     </div>
 </template>

@@ -6,9 +6,6 @@ const api = {
     sendTest: () => {
         ipcRenderer.send('test')
     },
-    sendLogin: (data) => {
-        ipcRenderer.send('login', data)
-    },
     sendPhoneAcceptClick: () => {
         ipcRenderer.send('phone-accept-click')
     },
@@ -36,8 +33,24 @@ const api = {
     sendSipEndCall: () => {
         ipcRenderer.send('sip-end-call')
     },
-    onLoginAuthorize: (callback) =>
-        ipcRenderer.on('loginWindow:login', (_event, value) => callback(value))
+    sendLoginRequest: (data) => {
+        ipcRenderer.send('login-request', data)
+    },
+    onLoginRequest: (callback) => {
+        ipcRenderer.on('login-request', (_event, value) => callback(value))
+    },
+    sendLoginResponse: (response) => {
+        ipcRenderer.send('login-response', response)
+    },
+    onLoginResponse: (callback) => {
+        ipcRenderer.on('login-response', (_event, value) => callback(value))
+    },
+    sendRegistererStateChange: (state) => {
+        ipcRenderer.send('registerer-state-change', state)
+    },
+    onRegistererStateChange: (callback) => {
+        ipcRenderer.send('registerer-state-change', (_event, value) => callback(value))
+    }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

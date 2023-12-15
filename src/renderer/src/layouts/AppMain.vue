@@ -1,27 +1,69 @@
 <script setup>
 import TabMenu from 'primevue/tabmenu'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import router from '../router'
 import { useSipStore } from '../stores/sipStore'
 import { timeout } from '../utils'
-// ✨
+import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
+import { storeToRefs } from 'pinia'
+
 const store = useSipStore()
 const login = ref(null)
 const pass = ref(null)
 
+const { registererState } = storeToRefs(store)
+
+store.responseCallback = (response) => {
+    console.log('APP: ', response)
+    if (response?.message?.statusCode != 200) {
+        const errResponse = {
+            name: 'AuthenticationError',
+            message: response?.reasonPhrase,
+            title: 'Ошибка авторизации'
+        }
+        window.api.sendLoginResponse({ error: errResponse })
+    } else {
+        window.api.sendLoginResponse({ status: 'OK' })
+    }
+}
+
+watch(registererState, (newState) => {
+    console.log('State updated -> ', newState)
+})
 // попытка авторизоваться
-window.api.onLoginAuthorize(async (data) => {
+window.api.onLoginRequest(async (data) => {
     login.value = data.login
     pass.value = data.password
-    await timeout(3000)
+
+    await timeout(2000)
     try {
         await store.start()
         console.log('connected...')
-        await timeout(10000)
+        await timeout(2000)
         await store.register()
         console.log('registered...')
-    } catch (err) {
-        console.log({ err })
+        //        window.api.sendLoginResponse({ status: 'OK' })
+    } catch (error) {
+        const errResponse = {
+            name: error.name,
+            message: error.message,
+            title: ''
+        }
+        switch (error.constructor) {
+            case ConnectionError:
+                console.log('connection error...')
+                errResponse.title = 'Ошибка соединения'
+                break
+            case RegistrationError:
+                console.log('registration error...')
+                errResponse.title = 'Ошибка регистрации в сети'
+                break
+            default:
+                console.log('error...')
+                errResponse.title = 'Ошибка соединения'
+                break
+        }
+        window.api.sendLoginResponse({ error: errResponse })
     }
 })
 // store.call(600)

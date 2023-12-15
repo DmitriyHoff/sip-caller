@@ -1,62 +1,62 @@
 import { defineStore } from 'pinia'
-import SipPhone from '../services/sip-phone'
+import { SipPhone } from '../services/sip-phone'
+import { ref } from 'vue'
+
+import delegate from './userAgentDelegate'
 
 export const useSipStore = defineStore('phone', () => {
-    const { api } = window
     const sipOptions = {
         uri: 'sip:202@gippars.ru',
         login: '202',
-        password: 'Hatr8Qhb!h122Qr~',
+        password: 'Hatr8Qhb!h122Qr',
         server: 'wss://gippars.ru:4443/ws'
     }
-    const delegate = {
-        onConnect: () => {
-            api.sendSipConnect()
-            console.log('Connect -->>>')
-        },
-        onDisconnect: (error) => {
-            api.sendSipDisconnect(error)
-            console.log('Disconnect: ', { error })
-        },
-        onInvite: (invitation) => {
-            // this.onIncomingCall(invitation)
-            api.sendSipInvite(invitation)
-            console.log('Invitation...', { invitation })
-        },
-        onMessage: (message) => {
-            api.sendSipMessage(message)
-            console.log('Message ', { message })
-        },
-        onNotify: (notification) => {
-            api.sendSipNotify(notification)
-            console.log('Notify ', { notification })
-        },
-        onRegister: (register) => {
-            console.log('Register ->>> ', { register })
-        },
-        onRegisterRequest: (reg) => {
-            console.log('RegisterRequest ->>>', { reg })
-        }
+
+    const responseCallback = ref(null)
+
+    function registererStateChangeListener(state) {
+        registererState.value = state
+        console.log({ state })
     }
+
+    function responseListener(response) {
+        if (responseCallback.value) responseCallback.value(response)
+        console.log('STORE: ', { response })
+    }
+
     // Моя звонилка
-    const phone = new SipPhone(sipOptions, delegate)
+    const phone = new SipPhone(
+        sipOptions,
+        delegate,
+        responseListener,
+        registererStateChangeListener
+    )
     function call(number) {
         phone.call(`sip:${number}@gippars.ru`)
         window.api.sendSipBeginCall()
     }
+
     function terminate() {
         phone.hangUp()
         window.api.sendSipEndCall()
     }
+
     function accept() {
         phone.answer()
     }
-    async function start() {
+
+    function start() {
         return phone.start()
     }
-    async function register() {
+
+    function register() {
         return phone.register()
     }
-    // phone.start().then(async () => phone.register())
-    return { start, register, call, terminate, accept }
+
+    function onResponse(callback) {
+        responseCallback.value = callback
+    }
+    const registererState = ref('')
+
+    return { start, register, call, terminate, accept, registererState, responseCallback }
 })

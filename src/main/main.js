@@ -44,34 +44,43 @@ app.whenReady().then(async () => {
     ipcMain.on('test', async (event, params) => {
         console.log('main:test')
     })
-    ipcMain.on('login', async (event, params) => {
-        console.log('main:login')
+    ipcMain.on('login-request', async (event, params) => {
+        console.log('electron: login-request')
         console.log({ params })
-        mainWindow.browserWindow.webContents.send('loginWindow:login',  params )
+        mainWindow.browserWindow.webContents.send('login-request', params)
     })
 
-    ipcMain.on('phone-accept-click', async () => {
-        console.log('phone-accept-click')
+    ipcMain.on('login-response', async (event, params) => {
+        console.log('electron: login-response', params)
+
+        loginWindow.browserWindow.webContents.send('login-response', params)
+        if (!params.error) {
+            loginWindow.browserWindow.close()
+            mainWindow.show()
+        }
     })
+    ipcMain.on('phone-accept-click', async () => {
+        console.log('electron: phone-accept-click')
+    })
+
     ipcMain.on('phone-cancel-click', () => {
-        console.log('phone-cancel-click')
+        console.log('electron: phone-cancel-click')
     })
     ipcMain.on('sip-connect', () => {
         isLoggedIn = true
-        loginWindow.browserWindow.close()
-        mainWindow.show()
-        console.log('sip-connect')
+
+        console.log('electron: sip-connect')
     })
     ipcMain.on('sip-disconnect', () => {
-        console.log('sip-disconnect')
+        console.log('electron: sip-disconnect')
     })
     ipcMain.on('sip-begin-call', () => {
-        console.log('sip-begin-call')
-        callWindow.webContents.send('sip:begin-call')
+        console.log('electron: sip-begin-call')
+        callWindow.webContents.send('sip-begin-call')
         callWindow.show()
     })
     ipcMain.on('sip-end-call', () => {
-        console.log('sip-end-call')
+        console.log('electron: sip-end-call')
     })
 })
 
