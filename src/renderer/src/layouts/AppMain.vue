@@ -114,6 +114,8 @@ const items = ref([
 <style>
 #app {
     font-family: 'Roboto';
+    font-weight: 400;
+    font-variant: normal;
 }
 .p-component,
 .p-inputtext {

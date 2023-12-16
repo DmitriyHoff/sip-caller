@@ -17,16 +17,17 @@ import ProgressBar from 'primevue/progressbar'
 import router from '../router'
 import App from '../layouts/AppMain.vue'
 
-import '../assets/fonts/Roboto/Roboto-Regular.ttf'
-import '../assets/fonts/Roboto/Roboto-Medium.ttf'
-import '../assets/fonts/Roboto/Roboto-Bold.ttf'
+// import '../assets/fonts/Roboto/Roboto-Regular.ttf'
+// import '../assets/fonts/Roboto/Roboto-Medium.ttf'
+// import '../assets/fonts/Roboto/Roboto-Bold.ttf'
 
-import '../assets/css/fonts.css'
+
 import '../assets/css/normalize.css'
 import 'primevue/resources/themes/lara-light-green/theme.css'
 //import 'primevue/resources/themes/lara-dark-green/theme.css'
 import 'primeflex/primeflex.scss'
 import 'primeicons/primeicons.css'
+import '../assets/css/fonts.css'
 const app = createApp(App)
 const pinia = createPinia()
 
