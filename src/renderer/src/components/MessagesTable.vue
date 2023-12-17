@@ -11,7 +11,7 @@ const selectedMessage = ref(null)
         :value="messages"
         selection-mode="single"
         data-key="id"
-        class="p-datatable-sm text-xs w-full h-full font"
+        class="p-datatable-sm text-sm w-full h-full"
         scrollable
         scroll-height="100%"
     >
@@ -25,11 +25,11 @@ const selectedMessage = ref(null)
     </DataTable>
 </template>
 <style>
-.font {
+/* .font {
     font-family: 'Roboto';
     font-style: normal;
     font-size: 16px;
     font-weight: 400;
     font-feature-settings: normal;
-}
+} */
 </style>

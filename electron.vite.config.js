@@ -16,24 +16,6 @@ export default defineConfig({
             }
         },
         plugins: [vue()],
-        assetsInclude: ['**/*.woff2', '**/*.ttf']
-        // transformHead({ assets }) {
-        //     // adjust the regex accordingly to match your font
-        //     const myFontFile = assets.find((file) => /font-name\.\w+\.ttf/)
-        //     if (myFontFile) {
-        //         return [
-        //             [
-        //                 'link',
-        //                 {
-        //                     rel: 'preload',
-        //                     href: myFontFile,
-        //                     as: 'font',
-        //                     type: 'font/ttf',
-        //                     crossorigin: ''
-        //                 }
-        //             ]
-        //         ]
-        //     }
-        // }
+//        assetsInclude: ['**/*.woff2', '**/*.ttf']
     }
 })

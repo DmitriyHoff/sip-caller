@@ -15,7 +15,7 @@ const selectedUser = ref(null)
         :value="products"
         selection-mode="single"
         data-key="id"
-        class="p-datatable-sm text-xs w-full overflow-y-auto"
+        class="p-datatable-sm text-sm w-full overflow-y-auto"
         row-group-mode="subheader"
         group-rows-by="status.text"
         sort-mode="single"
@@ -40,7 +40,7 @@ const selectedUser = ref(null)
         <Column field="name" header="Имя"></Column>
         <Column field="phone" header="Номер">
             <template #body="{ data }">
-                <span class="phone text-sm">{{ data.phone }}</span>
+                <span class="phone">{{ data.phone }}</span>
             </template>
         </Column>
         <Column field="post" header="Должность"></Column>
@@ -54,7 +54,8 @@ const selectedUser = ref(null)
 
 <style scoped>
 .phone {
+    font-family: 'RobotoMono' !important;
     font-weight: 700;
-    font-family: 'Lucida Console', Courier, monospace;
+    font-style: normal;
 }
 </style>
