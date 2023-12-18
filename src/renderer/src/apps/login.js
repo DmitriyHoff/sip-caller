@@ -8,8 +8,8 @@ import Checkbox from 'primevue/checkbox'
 import ProgressSpinner from 'primevue/progressspinner'
 
 import '../assets/css/normalize.css'
-import 'primevue/resources/themes/lara-light-green/theme.css'
-//import 'primevue/resources/themes/lara-dark-green/theme.css'
+//import 'primevue/resources/themes/lara-light-green/theme.css'
+import 'primevue/resources/themes/lara-dark-blue/theme.css'
 import 'primeflex/primeflex.scss'
 import 'primeicons/primeicons.css'
 

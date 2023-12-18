@@ -1,11 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import dotenv from 'dotenv'
+dotenv.config()
 
 // Custom APIs for renderer
 const api = {
     sendTest: () => {
         ipcRenderer.send('test')
     },
+
     sendPhoneAcceptClick: () => {
         ipcRenderer.send('phone-accept-click')
     },
@@ -30,6 +33,9 @@ const api = {
     sendSipBeginCall: () => {
         ipcRenderer.send('sip-begin-call')
     },
+    onSipBeginCall: () => {
+        ipcRenderer.on('sip-begin-call')
+    },
     sendSipEndCall: () => {
         ipcRenderer.send('sip-end-call')
     },
@@ -50,9 +56,14 @@ const api = {
     },
     onRegistererStateChange: (callback) => {
         ipcRenderer.send('registerer-state-change', (_event, value) => callback(value))
-    }
-}
+    },
 
+    // информация о системной теме
+    shouldUseDarkColors: async () => {
+        return ipcRenderer.invoke('should-use-dark-colors')
+    },
+    SERVER_URL: process.env.SERVER_URL
+}
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.

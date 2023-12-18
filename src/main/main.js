@@ -1,5 +1,5 @@
 // билиотеки
-import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeTheme, systemPreferences } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 
 // окна
@@ -18,6 +18,7 @@ const showWindow = (win) => win.show()
 loginWindow.events.on('ready-to-show', showWindow)
 
 app.whenReady().then(async () => {
+    console.log('nativeTheme.shouldUseDarkColors: ', nativeTheme.shouldUseDarkColors)
     // Set app user model id for windows
     electronApp.setAppUserModelId('com.electron')
 
@@ -48,6 +49,7 @@ app.whenReady().then(async () => {
     ipcMain.on('login-request', async (event, params) => {
         console.log('electron: login-request')
         console.log({ params })
+        mainWindow.show()
         mainWindow.browserWindow.webContents.send('login-request', params)
     })
 
@@ -59,18 +61,23 @@ app.whenReady().then(async () => {
             mainWindow.show()
         } else {
             loginWindow.browserWindow.webContents.send('login-response', params)
+            const micUse = await systemPreferences.askForMediaAccess('microphone')
+            if (!micUse) {
+                alert('Error')
+            }
         }
     })
     ipcMain.on('phone-accept-click', async () => {
         console.log('electron: phone-accept-click')
     })
-
+    ipcMain.on('sip-invite', async () => {
+        console.log('electron: sip-invite')
+    })
     ipcMain.on('phone-cancel-click', () => {
         console.log('electron: phone-cancel-click')
     })
     ipcMain.on('sip-connect', () => {
         isLoggedIn = true
-
         console.log('electron: sip-connect')
     })
     ipcMain.on('sip-disconnect', () => {
@@ -78,11 +85,17 @@ app.whenReady().then(async () => {
     })
     ipcMain.on('sip-begin-call', () => {
         console.log('electron: sip-begin-call')
-        callWindow.webContents.send('sip-begin-call')
+        //callWindow.browserWindow.webContents.send('sip-begin-call')
         callWindow.show()
+        callWindow.browserWindow.webContents.send('sip-begin-call')
     })
     ipcMain.on('sip-end-call', () => {
         console.log('electron: sip-end-call')
+    })
+
+    ipcMain.handle('should-use-dark-colors', () => {
+        console.log('electron: should-use-dark-colors')
+        return nativeTheme.shouldUseDarkColors
     })
 })
 

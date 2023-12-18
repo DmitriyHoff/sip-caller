@@ -8,10 +8,10 @@ import { ConnectionError, RegistrationError } from '../services/sip-phone' // �
 import { storeToRefs } from 'pinia'
 
 const store = useSipStore()
-// const login = ref(null)
-// const pass = ref(null)
+const login = ref(null)
+const pass = ref(null)
 
-const { registererState, phone } = storeToRefs(store)
+const { registererState } = storeToRefs(store)
 
 store.responseCallback = (response) => {
     console.log('APP: ', response)
@@ -33,25 +33,9 @@ watch(registererState, (newState) => {
 
 // попытка авторизоваться
 window.api.onLoginRequest(async (data) => {
-    const {
-        login_id,
-        login_name,
-        sip_num,
-        sip_pas,
-        sip_srv,
-        sip_rereg,
-        cur_timer,
-        emp_list_time,
-        mes_list_time,
-        regulations_timer
-    } = data
-    const sipOptions = {
-        uri: 'sip:202@gippars.ru',
-        login: '202',
-        password: 'Hatr8Qhb!h122Qr',
-        server: 'wss://gippars.ru:4443/ws'
-    }
-    store.init(sipOptions)
+    login.value = data.login
+    pass.value = data.password
+
     await timeout(500)
     try {
         await store.start()

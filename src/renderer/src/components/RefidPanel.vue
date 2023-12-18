@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import { useSipStore } from '../stores/sipStore'
+const store = useSipStore()
 
 const refidNumber = ref(null)
 const phoneNumber = ref(null)
@@ -22,6 +24,10 @@ const splitButtonItems = [
         }
     }
 ]
+
+function call() {
+    store.call(phoneNumber.value)
+}
 </script>
 <template>
     <div class="surface-card shadow-2 p-3 pt-6 border-round w-full h-full overflow-y-auto">
@@ -63,6 +69,7 @@ const splitButtonItems = [
                     size="small"
                     icon="pi pi-phone"
                     severity="success"
+                    @click="call"
                 />
             </div>
 

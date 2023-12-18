@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
     main: {
-        plugins: [externalizeDepsPlugin({ exclude: ['sip.js'] })]
+        plugins: [externalizeDepsPlugin({ exclude: ['dotenv'] })]
     },
     preload: {
         plugins: [externalizeDepsPlugin()]

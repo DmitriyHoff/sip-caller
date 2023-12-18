@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 const login = ref(null)
 const password = ref(null)
@@ -9,19 +10,38 @@ const loading = ref(false)
 const errorMessage = ref(null)
 const hasError = ref(false)
 
-function onClick() {
-    loading.value = true
-    window.api.sendLoginRequest({
+async function getCallCenterInfo() {
+    const response = await axios.post(`${window.api.SERVER_URL}/user/callCenter/login`, {
         login: login.value,
         password: password.value
     })
-    hasError.value = false
+    return response
+}
+
+async function onClick() {
+    loading.value = true
+    getCallCenterInfo()
+        .then((userInfo) => {
+            console.log(userInfo.data)
+            window.api.sendLoginRequest(userInfo.data)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+        .finally(() => {
+            loading.value = false
+            hasError.value = false
+        })
 }
 window.api.onLoginResponse((response) => {
     console.log('response', response)
     loading.value = false
     errorMessage.value = response.error.title
     hasError.value = true
+})
+
+window.api.shouldUseDarkColors().then((val) => {
+    console.log('shouldUseDarkColors: ', val)
 })
 </script>
 
