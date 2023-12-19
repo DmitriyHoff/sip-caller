@@ -62,6 +62,10 @@ const api = {
     shouldUseDarkColors: async () => {
         return ipcRenderer.invoke('should-use-dark-colors')
     },
+    // изменение системной темы
+    onNativeThemeUpdated: async (callback) => {
+        ipcRenderer.on('native-theme-updated', (_event, value) => callback(value))
+    },
     SERVER_URL: process.env.SERVER_URL
 }
 // Use `contextBridge` APIs to expose Electron APIs to

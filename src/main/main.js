@@ -100,6 +100,17 @@ app.whenReady().then(async () => {
         console.log('electron: should-use-dark-colors: ', nativeTheme.shouldUseDarkColors)
         return nativeTheme.shouldUseDarkColors
     })
+
+    nativeTheme.on('updated', () => {
+        loginWindow.browserWindow.webContents.send(
+            'native-theme-updated',
+            nativeTheme.shouldUseDarkColors
+        )
+        mainWindow.browserWindow.webContents.send(
+            'native-theme-updated',
+            nativeTheme.shouldUseDarkColors
+        )
+    })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

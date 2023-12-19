@@ -11,9 +11,7 @@ import Textarea from 'primevue/textarea'
 import SplitButton from 'primevue/splitbutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-
 import ScrollPanel from 'primevue/scrollpanel'
-
 import ProgressBar from 'primevue/progressbar'
 
 import router from '../router'

@@ -1,18 +1,14 @@
 <script setup>
 import TabMenu from 'primevue/tabmenu'
-import { usePrimeVue } from 'primevue/config'
 import { ref, watch } from 'vue'
 import router from '../router'
 import { useSipStore } from '../stores/sipStore'
-import { timeout, setDarkTheme } from '../utils'
+import { timeout, setThemeDependency } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
 import onMessage from '../services/tabloSocketHandler'
 
-const PrimeVue = usePrimeVue()
-window.api.shouldUseDarkColors().then((val) => {
-    setDarkTheme(PrimeVue, val)
-})
+setThemeDependency()
 
 const store = useSipStore()
 const credentials = ref(null)

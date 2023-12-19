@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { timeout, setDarkTheme } from '../utils'
+import { timeout, setThemeDependency } from '../utils'
 import axios from 'axios'
-import { usePrimeVue } from 'primevue/config'
-const PrimeVue = usePrimeVue()
+
+setThemeDependency()
 
 const login = ref(null)
 const password = ref(null)
@@ -70,9 +70,7 @@ window.api.onLoginResponse((response) => {
     hasError.value = true
 })
 
-window.api.shouldUseDarkColors().then((val) => {
-    setDarkTheme(PrimeVue, val)
-})
+
 </script>
 
 <template>
