@@ -14,7 +14,7 @@ const callWindow = new CallWindow()
 let isLoggedIn = false
 
 const showWindow = (win) => win.show()
-// mainWindow.events.on('ready-to-show', showWindow)
+mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
 loginWindow.events.on('ready-to-show', showWindow)
 
 app.whenReady().then(async () => {
@@ -46,6 +46,8 @@ app.whenReady().then(async () => {
     ipcMain.on('test', async (event, params) => {
         console.log('main:test')
     })
+
+    /* Запрос авторизации от loginWindow */
     ipcMain.on('login-request', async (event, params) => {
         console.log('electron: login-request')
         console.log({ params })
@@ -53,6 +55,7 @@ app.whenReady().then(async () => {
         mainWindow.browserWindow.webContents.send('login-request', params)
     })
 
+    /* Ответ основного окна на запрос авторизации */
     ipcMain.on('login-response', async (event, params) => {
         console.log('electron: login-response', params)
 

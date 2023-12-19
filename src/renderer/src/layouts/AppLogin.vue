@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { timeout } from '../utils'
 import axios from 'axios'
 
 const login = ref(null)
@@ -10,29 +11,56 @@ const loading = ref(false)
 const errorMessage = ref(null)
 const hasError = ref(false)
 
-async function getCallCenterInfo() {
-    const response = await axios.post(`${window.api.SERVER_URL}/user/callCenter/login`, {
+async function userLogin() {
+    const response = await axios.post(`${window.api.SERVER_URL}/user/login`, {
         login: login.value,
         password: password.value
     })
-    return response
+    console.log(response)
+    return response?.data?.data?.token
+}
+
+async function getSipCredentials(token) {
+    const response = await axios.post(
+        `${window.api.SERVER_URL}/user/sipCredentials`,
+        {
+            login: login.value,
+            password: password.value
+        },
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    )
+    console.log(response)
+    return response?.data
 }
 
 async function onClick() {
     loading.value = true
-    getCallCenterInfo()
-        .then((userInfo) => {
-            console.log(userInfo.data)
-            window.api.sendLoginRequest(userInfo.data)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-        .finally(() => {
-            loading.value = false
-            hasError.value = false
-        })
+    hasError.value = false
+    await timeout(1500)
+    try {
+        const token = await userLogin()
+        if (!token) throw new Error('Ошибка авторизации')
+        const credentials = await getSipCredentials(token)
+
+        // дальше попытка подключения и регистрации в АТС
+        window.api.sendLoginRequest({ token, credentials })
+    } catch (error) {
+        hasError.value = true
+        if (axios.isAxiosError(error)) {
+            errorMessage.value = error?.response?.data
+        } else {
+            errorMessage.value = error.message
+        }
+        console.log(error)
+    } finally {
+        loading.value = false
+    }
 }
+
 window.api.onLoginResponse((response) => {
     console.log('response', response)
     loading.value = false

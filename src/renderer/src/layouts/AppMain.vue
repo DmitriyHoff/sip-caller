@@ -6,10 +6,10 @@ import { useSipStore } from '../stores/sipStore'
 import { timeout } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
-
+import onMessage from '../services/tabloSocketHandler'
 const store = useSipStore()
-// const login = ref(null)
-// const pass = ref(null)
+const credentials = ref(null)
+const token = ref(null)
 
 const { registererState, phone } = storeToRefs(store)
 
@@ -33,18 +33,11 @@ watch(registererState, (newState) => {
 
 // попытка авторизоваться
 window.api.onLoginRequest(async (data) => {
-    const {
-        login_id,
-        login_name,
-        sip_num,
-        sip_pas,
-        sip_srv,
-        sip_rereg,
-        cur_timer,
-        emp_list_time,
-        mes_list_time,
-        regulations_timer
-    } = data
+    credentials.value = data.credentials
+    token.value = data.token
+
+    const socket = new WebSocket('ws://docker.accidentlaw.ru:8082/ws')
+    socket.onmessage = onMessage
     const sipOptions = {
         uri: 'sip:202@gippars.ru',
         login: '202',

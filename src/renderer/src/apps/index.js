@@ -12,7 +12,7 @@ import SplitButton from 'primevue/splitbutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-import ScrollPanel from 'primevue/scrollpanel';
+import ScrollPanel from 'primevue/scrollpanel'
 
 import ProgressBar from 'primevue/progressbar'
 
