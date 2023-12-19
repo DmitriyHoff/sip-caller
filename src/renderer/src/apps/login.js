@@ -1,6 +1,7 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
+
 import Login from '../layouts/AppLogin.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
@@ -8,8 +9,6 @@ import Checkbox from 'primevue/checkbox'
 import ProgressSpinner from 'primevue/progressspinner'
 
 import '../assets/css/normalize.css'
-//import 'primevue/resources/themes/lara-light-green/theme.css'
-import 'primevue/resources/themes/lara-dark-blue/theme.css'
 import 'primeflex/primeflex.scss'
 import 'primeicons/primeicons.css'
 

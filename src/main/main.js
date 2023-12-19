@@ -97,7 +97,7 @@ app.whenReady().then(async () => {
     })
 
     ipcMain.handle('should-use-dark-colors', () => {
-        console.log('electron: should-use-dark-colors')
+        console.log('electron: should-use-dark-colors: ', nativeTheme.shouldUseDarkColors)
         return nativeTheme.shouldUseDarkColors
     })
 })
