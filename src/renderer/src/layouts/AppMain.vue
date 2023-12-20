@@ -6,10 +6,13 @@ import { useSipStore } from '../stores/sipStore'
 import { timeout } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
+import axios from 'axios'
 import onMessage from '../services/tabloSocketHandler'
+
 const store = useSipStore()
 const credentials = ref(null)
 const token = ref(null)
+const contacts = ref(null)
 
 const { registererState, phone } = storeToRefs(store)
 
@@ -36,8 +39,6 @@ window.api.onLoginRequest(async (data) => {
     credentials.value = data.credentials
     token.value = data.token
 
-    const socket = new WebSocket('ws://docker.accidentlaw.ru:8082/ws')
-    socket.onmessage = onMessage
     const sipOptions = {
         uri: 'sip:202@gippars.ru',
         login: '202',

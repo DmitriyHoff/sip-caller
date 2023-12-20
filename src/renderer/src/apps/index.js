@@ -1,3 +1,5 @@
+// import devtools from '@vue/devtools'
+// devtools.connect(/* host, port */)
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 

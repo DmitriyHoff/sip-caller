@@ -62,7 +62,8 @@ const api = {
     shouldUseDarkColors: async () => {
         return ipcRenderer.invoke('should-use-dark-colors')
     },
-    SERVER_URL: process.env.SERVER_URL
+    SERVER_URL: process.env.SERVER_URL,
+    WEB_SOCKET_SERVER: process.env.WEB_SOCKET_SERVER
 }
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
