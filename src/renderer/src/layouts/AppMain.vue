@@ -11,7 +11,6 @@ import onMessage from '../services/tabloSocketHandler'
 
 setThemeDependency()
 
-
 const store = useSipStore()
 const credentials = ref(null)
 const token = ref(null)

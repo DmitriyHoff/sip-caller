@@ -102,6 +102,7 @@ app.whenReady().then(async () => {
     })
 
     nativeTheme.on('updated', () => {
+        console.log('electron:system theme updated!', nativeTheme.shouldUseDarkColors)
         loginWindow.browserWindow.webContents.send(
             'native-theme-updated',
             nativeTheme.shouldUseDarkColors
