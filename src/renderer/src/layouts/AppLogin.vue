@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { timeout } from '../utils'
+import { timeout, setThemeDependency } from '../utils'
 import axios from 'axios'
+
+setThemeDependency()
 
 const login = ref(null)
 const password = ref(null)
@@ -68,9 +70,7 @@ window.api.onLoginResponse((response) => {
     hasError.value = true
 })
 
-window.api.shouldUseDarkColors().then((val) => {
-    console.log('shouldUseDarkColors: ', val)
-})
+
 </script>
 
 <template>

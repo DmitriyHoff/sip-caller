@@ -3,11 +3,14 @@ import TabMenu from 'primevue/tabmenu'
 import { ref, watch } from 'vue'
 import router from '../router'
 import { useSipStore } from '../stores/sipStore'
-import { timeout } from '../utils'
+import { timeout, setThemeDependency } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
 import axios from 'axios'
 import onMessage from '../services/tabloSocketHandler'
+
+setThemeDependency()
+
 
 const store = useSipStore()
 const credentials = ref(null)
