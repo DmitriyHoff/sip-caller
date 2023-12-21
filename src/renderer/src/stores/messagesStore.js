@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const contactsStore = defineStore('messages', () => {
+export const useMessagesStore = defineStore('messages', () => {
     /** Подключение к WebSocket */
     const socket = ref(null)
     const messages = ref([])
@@ -34,5 +34,5 @@ export const contactsStore = defineStore('messages', () => {
             }
         }
     }
-    return {connectSocket}
+    return { connectSocket, messages }
 })

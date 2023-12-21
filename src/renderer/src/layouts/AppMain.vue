@@ -3,23 +3,25 @@ import TabMenu from 'primevue/tabmenu'
 import { ref, watch } from 'vue'
 import router from '../router'
 import { useSipStore } from '../stores/sipStore'
+import { useContactsStore } from '../stores/contactsStore'
+import { useMessagesStore } from '../stores/messagesStore'
 import { timeout, setThemeDependency } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
-import axios from 'axios'
-import onMessage from '../services/tabloSocketHandler'
 
 setThemeDependency()
 
+const sipStore = useSipStore()
+const contactsStore = useContactsStore()
+const messagesStore = useMessagesStore()
 
-const store = useSipStore()
 const credentials = ref(null)
 const token = ref(null)
 const contacts = ref(null)
 
-const { registererState, phone } = storeToRefs(store)
+const { registererState, phone } = storeToRefs(sipStore)
 
-store.responseCallback = (response) => {
+sipStore.responseCallback = (response) => {
     console.log('APP: ', response)
     if (response?.message?.statusCode != 200) {
         const errResponse = {
@@ -48,14 +50,17 @@ window.api.onLoginRequest(async (data) => {
         password: 'Hatr8Qhb!h122Qr',
         server: 'wss://gippars.ru:4443/ws'
     }
-    store.init(sipOptions)
+    sipStore.init(sipOptions)
     await timeout(500)
     try {
-        await store.start()
+        await sipStore.start()
         console.log('connected...')
         await timeout(500)
-        await store.register()
+        await sipStore.register()
         console.log('registered...')
+        await contactsStore.load()
+        messagesStore.connectSocket()
+        contactsStore.load()
         //        window.api.sendLoginResponse({ status: 'OK' })
     } catch (error) {
         const errResponse = {

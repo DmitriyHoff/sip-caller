@@ -53,11 +53,11 @@ async function onClick() {
     } catch (error) {
         hasError.value = true
         if (axios.isAxiosError(error)) {
-            errorMessage.value = error?.response?.data
-        } else {
-            errorMessage.value = error.message
-        }
-        console.log(error)
+            errorMessage.value = error?.response?.data ? error?.response?.data : error.message
+        } else errorMessage.value = errorMessage
+        console.log({ error })
+        console.log(hasError.value)
+        console.log(errorMessage.value)
     } finally {
         loading.value = false
     }
@@ -69,8 +69,6 @@ window.api.onLoginResponse((response) => {
     errorMessage.value = response.error.title
     hasError.value = true
 })
-
-
 </script>
 
 <template>
