@@ -10,7 +10,6 @@ import { ConnectionError, RegistrationError } from '../services/sip-phone' // âœ
 import { storeToRefs } from 'pinia'
 
 setThemeDependency()
-
 const sipStore = useSipStore()
 const contactsStore = useContactsStore()
 const messagesStore = useMessagesStore()

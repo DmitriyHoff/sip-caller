@@ -7,8 +7,9 @@ function timeout(ms) {
 function setDarkTheme(PrimeVue, enabled) {
     if (enabled === true) {
         PrimeVue.changeTheme('lara-light-blue', 'lara-dark-blue', 'theme-link', () => {})
-        console.log('theme changed!')
+        console.log('theme changed to dark!')
     } else {
+        console.log('theme changed to light!')
         PrimeVue.changeTheme('lara-dark-blue', 'lara-light-blue', 'theme-link', () => {})
     }
 }
