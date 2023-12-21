@@ -15,6 +15,7 @@ let isLoggedIn = false
 
 const showWindow = (win) => win.show()
 mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
+callWindow.events.on('ready-to-show', showWindow)
 loginWindow.events.on('ready-to-show', showWindow)
 
 app.whenReady().then(async () => {
@@ -101,16 +102,24 @@ app.whenReady().then(async () => {
         return nativeTheme.shouldUseDarkColors
     })
 
-    nativeTheme.on('updated', () => {
+    nativeTheme.on('updated', async () => {
         console.log('electron:system theme updated!', nativeTheme.shouldUseDarkColors)
-        loginWindow.browserWindow.webContents.send(
-            'native-theme-updated',
-            nativeTheme.shouldUseDarkColors
-        )
-        mainWindow.browserWindow.webContents.send(
-            'native-theme-updated',
-            nativeTheme.shouldUseDarkColors
-        )
+        try {
+    
+
+            await loginWindow.browserWindow.webContents.send(
+                'native-theme-updated',
+                nativeTheme.shouldUseDarkColors
+            )
+
+            await mainWindow.browserWindow.webContents.send(
+                'native-theme-updated',
+                nativeTheme.shouldUseDarkColors
+            )
+        }
+        catch (error) {
+            console.log(error)
+        }
     })
 })
 

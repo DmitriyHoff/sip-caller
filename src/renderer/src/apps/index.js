@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
+import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import InputText from 'primevue/inputtext'
@@ -44,4 +45,5 @@ app.component('DataTable', DataTable)
 app.component('Column', Column)
 app.component('ProgressBar', ProgressBar)
 app.component('ScrollPanel', ScrollPanel)
+app.component('Avatar', Avatar)
 app.mount('#app')

@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import { timeout, setThemeDependency } from '../utils'
 import axios from 'axios'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiCoffee } from '@mdi/js'
+
+const icon = ref(mdiCoffee)
 
 setThemeDependency()
 
@@ -115,6 +119,7 @@ window.api.onLoginResponse((response) => {
                     </div>
 
                     <span class="mr-6">Авторизоваться</span>
+                    <!-- <svg-icon type="mdi" :path="icon" :size="24"></svg-icon> -->
                 </Button>
                 <span v-if="hasError" class="text-xs text-red-500">{{ errorMessage }}</span>
             </div>

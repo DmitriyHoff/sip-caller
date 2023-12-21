@@ -28,4 +28,36 @@ function setThemeDependency() {
         setDarkTheme(PrimeVue, val)
     })
 }
-export { timeout, setDarkTheme, setThemeDependency }
+
+function stringToColor(str) {
+    let hash = 0
+    let color = '#'
+
+    if (!str) {
+        return color + '333333'
+    }
+
+    const strLength = str.length
+
+    for (let i = 0; i < strLength; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+
+    for (let i = 0; i < 3; i++) {
+        const value = (hash >> (i * 8)) & 0xff
+        color += ('00' + value.toString(16)).slice(-2)
+    }
+
+    return color
+}
+
+function stringToInitials(str) {
+    const names = str.split(' ')
+    let initials = names[0].substring(0, 1).toUpperCase()
+
+    if (names.length > 1) {
+        initials += names[names.length - 1].substring(0, 1).toUpperCase()
+    }
+    return initials
+}
+export { timeout, setDarkTheme, setThemeDependency, stringToColor, stringToInitials }
