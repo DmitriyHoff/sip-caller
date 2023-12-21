@@ -1,4 +1,4 @@
-import { mdiCoffee, mdiPhoneOutgoing, mdiPhoneIncoming, mdiPen } from '@mdi/js'
+import { mdiPhoneOutgoing, mdiPhoneIncoming, mdiPen, mdiFood, mdiClockOutline } from '@mdi/js'
 
 class UserStatusGroup {
     static _status = {
@@ -38,16 +38,24 @@ class UserStatusGroup {
         if (UserStatusGroup.isOffline(statusId)) return 4
     }
     static getStatusIcon(statusId) {
-        switch (this.getStatusGroup(statusId)) {
+        switch (statusId) {
             case 1:
+                return null
             case -1:
+                return mdiPhoneIncoming
             case -2:
+                return mdiPhoneOutgoing
             case -3:
+                return mdiPen
             case -4:
+                return mdiPen
             case 2:
+                return mdiFood
             case 3:
+                return mdiClockOutline
             case 0:
             case null:
+                return null
         }
     }
 }

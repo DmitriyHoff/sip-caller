@@ -39,21 +39,24 @@ const selectedUser = ref(null)
                     class="mr-2"
                     :style="{
                         'background-color': stringToColor(data.last_name + ' ' + data.first_name),
-                        color: '#ffffff',
-
+                        color: '#ffffff'
                     }"
                 >
                     <template #default>
-                        <div style="width: 100%; height: 100%; position: relative" 
-                        class="flex align-items-center w-full justify-content-center">
-                            <p class="">{{ stringToInitials(data.last_name + ' ' + data.first_name) }}</p>
+                        <div
+                            style="width: 100%; height: 100%; position: relative"
+                            class="flex align-items-center w-full justify-content-center"
+                        >
+                            <p class="">
+                                {{ stringToInitials(data.last_name + ' ' + data.first_name) }}
+                            </p>
 
-                            <svg-icon 
-                            class="pi pi-circle-fill border-circle text-xs custom-badge text-600 pad-1"
-                            type="mdi" 
-                            path="" 
-                            :size="20"
-                            :class="{
+                            <svg-icon
+                                class="pi pi-circle-fill border-circle text-xs custom-badge text-50 pad-1"
+                                type="mdi"
+                                :path="UserStatusGroup.getStatusIcon(data.status_id)"
+                                :size="20"
+                                :class="{
                                     'bg-green-500': UserStatusGroup.isOnline(data.status_id),
                                     'bg-orange-400': UserStatusGroup.isWork(data.status_id),
                                     'bg-yellow-400': UserStatusGroup.isLanchBreak(data.status_id),
@@ -91,7 +94,6 @@ const selectedUser = ref(null)
             </div>
         </template>
     </DataTable>
-
 </template>
 
 <style scoped>
@@ -108,6 +110,6 @@ const selectedUser = ref(null)
     transform: translate(40%, 40%);
 }
 .pad-1 {
-    padding: 3px;
+    padding: 1px;
 }
 </style>
