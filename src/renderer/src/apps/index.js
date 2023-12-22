@@ -16,7 +16,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ScrollPanel from 'primevue/scrollpanel'
 import ProgressBar from 'primevue/progressbar'
-
+import ToastService from 'primevue/toastservice';
 import router from '../router'
 import App from '../layouts/AppMain.vue'
 
@@ -33,6 +33,7 @@ const pinia = createPinia()
 app.use(PrimeVue)
 app.use(pinia)
 app.use(router)
+app.use(ToastService)
 
 app.component('Splitter', Splitter)
 app.component('SplitterPanel', SplitterPanel)

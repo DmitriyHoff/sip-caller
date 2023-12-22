@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { SocketMessage } from '../classes/SocketMessage'
+import { Queue } from '../classes/Queue'
 
 export const useMessagesStore = defineStore('messages', () => {
     /** Подключение к WebSocket */
     const socket = ref(null)
-    const messages = ref([])
+    const messages = ref(new Queue())
+    const onIncomingMessage = ref(null)
     function connectSocket() {
         socket.value = new WebSocket(window.api.WEB_SOCKET_SERVER)
         socket.value.onmessage = async (msg) => {
@@ -20,8 +23,15 @@ export const useMessagesStore = defineStore('messages', () => {
                     case 'tablo':
                         switch (type.module) {
                             case 'main_info':
-                                console.log('Main_info: ', dataJSON)
-                                messages.value.push(dataJSON)
+                                // console.log('Main_info: ', dataJSON)
+                                messages.value.push(new SocketMessage(dataJSON))
+
+                                console.log(
+                                    `typeof onIncomingMessage.value === 'function': `,
+                                    typeof onIncomingMessage.value
+                                )
+                                if (typeof onIncomingMessage.value === 'function')
+                                    onIncomingMessage.value()
                                 break
                         }
                         break
@@ -34,5 +44,5 @@ export const useMessagesStore = defineStore('messages', () => {
             }
         }
     }
-    return { connectSocket, messages }
+    return { connectSocket, messages, onIncomingMessage }
 })

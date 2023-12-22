@@ -1,4 +1,12 @@
-import { mdiPhoneOutgoing, mdiPhoneIncoming, mdiPen, mdiFood, mdiClockOutline } from '@mdi/js'
+import {
+    mdiHeadset,
+    mdiPhoneOutgoing,
+    mdiPhoneIncoming,
+    mdiPen,
+    mdiFood,
+    mdiClockOutline,
+    mdiHeadsetOff
+} from '@mdi/js'
 
 class UserStatusGroup {
     static _status = {
@@ -40,7 +48,7 @@ class UserStatusGroup {
     static getStatusIcon(statusId) {
         switch (statusId) {
             case 1:
-                return null
+                return mdiHeadset
             case -1:
                 return mdiPhoneIncoming
             case -2:
@@ -55,7 +63,8 @@ class UserStatusGroup {
                 return mdiClockOutline
             case 0:
             case null:
-                return null
+                return mdiHeadsetOff
+            default: return 'undefined'
         }
     }
 }

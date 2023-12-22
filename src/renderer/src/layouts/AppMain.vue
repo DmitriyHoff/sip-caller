@@ -2,7 +2,7 @@
 import TabMenu from 'primevue/tabmenu'
 import { ref, watch } from 'vue'
 import router from '../router'
-import { useSipStore } from '../stores/sipStore'
+//import { useSipStore } from '../stores/sipStore'
 import { useContactsStore } from '../stores/contactsStore'
 import { useMessagesStore } from '../stores/messagesStore'
 import { timeout, setThemeDependency } from '../utils'
@@ -10,7 +10,7 @@ import { ConnectionError, RegistrationError } from '../services/sip-phone' // �
 import { storeToRefs } from 'pinia'
 
 setThemeDependency()
-const sipStore = useSipStore()
+//const sipStore = useSipStore()
 const contactsStore = useContactsStore()
 const messagesStore = useMessagesStore()
 
@@ -18,25 +18,25 @@ const credentials = ref(null)
 const token = ref(null)
 const contacts = ref(null)
 
-const { registererState, phone } = storeToRefs(sipStore)
+// const { registererState, phone } = storeToRefs(sipStore)
 
-sipStore.responseCallback = (response) => {
-    console.log('APP: ', response)
-    if (response?.message?.statusCode != 200) {
-        const errResponse = {
-            name: 'AuthenticationError',
-            message: response?.reasonPhrase,
-            title: 'Ошибка авторизации'
-        }
-        window.api.sendLoginResponse({ error: errResponse })
-    } else {
-        window.api.sendLoginResponse({ status: 'OK' })
-    }
-}
+// sipStore.responseCallback = (response) => {
+//     console.log('APP: ', response)
+//     if (response?.message?.statusCode != 200) {
+//         const errResponse = {
+//             name: 'AuthenticationError',
+//             message: response?.reasonPhrase,
+//             title: 'Ошибка авторизации'
+//         }
+//         window.api.sendLoginResponse({ error: errResponse })
+//     } else {
+//         window.api.sendLoginResponse({ status: 'OK' })
+//     }
+// }
 
-watch(registererState, (newState) => {
-    console.log('State updated -> ', newState)
-})
+// watch(registererState, (newState) => {
+//     console.log('State updated -> ', newState)
+// })
 
 // попытка авторизоваться
 window.api.onLoginRequest(async (data) => {
@@ -49,18 +49,18 @@ window.api.onLoginRequest(async (data) => {
         password: 'Hatr8Qhb!h122Qr',
         server: 'wss://gippars.ru:4443/ws'
     }
-    sipStore.init(sipOptions)
+    //  sipStore.init(sipOptions)
     await timeout(500)
     try {
-        await sipStore.start()
+        // await sipStore.start()
         console.log('connected...')
         await timeout(500)
-        await sipStore.register()
+        // await sipStore.register()
         console.log('registered...')
         await contactsStore.load()
         messagesStore.connectSocket()
         contactsStore.load()
-        //        window.api.sendLoginResponse({ status: 'OK' })
+        window.api.sendLoginResponse({ status: 'OK' })
     } catch (error) {
         const errResponse = {
             name: error.name,

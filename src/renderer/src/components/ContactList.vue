@@ -2,36 +2,97 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Avatar from 'primevue/avatar'
+import Toast from 'primevue/toast'
 import { ref } from 'vue'
 //import contacts from '../data/contactsList.js'
 import { useContactsStore } from '../stores/contactsStore'
 import { storeToRefs } from 'pinia'
-import { UserStatusGroup } from '../const'
+import { UserStatusGroup } from '../classes'
 import { stringToColor, stringToInitials } from '../utils'
 import SvgIcon from '@jamescoyle/vue-icon'
+import { useToast } from 'primevue/usetoast'
 
 const contactsStore = useContactsStore()
 const { contacts } = storeToRefs(contactsStore)
-const products = ref(contacts)
 
-console.log(products)
+// Запускаем таймер
+const currentTime = ref(null)
+setInterval(() => {
+    currentTime.value = new Date()
+}, 1000)
+
+const toast = useToast()
+const show = () => {
+    toast.add({ severity: 'info', summary: 'Info', detail: currentTime.value, life: 3000 })
+}
+console.log(contacts)
 const selectedUser = ref(null)
+
+// параметры сортировки таблицы
+const multiSort = ref([
+    { field: 'status_group_id', order: 1 },
+    { field: 'last_name', order: 1 },
+    { field: 'first_name', order: 1 }
+])
+
+function isDate(dataTimeString) {
+    const date = Date.parse(dataTimeString)
+    return !Number.isNaN(date)
+}
+function time(statusId, dataTimeString) {
+    if (UserStatusGroup.isOffline(statusId)) return null
+
+    if (isDate(dataTimeString)) {
+        const res = currentTime.value - Date.parse(dataTimeString)
+        const format = formatDate(res)
+        return format
+    }
+    return null
+}
+
+function formatDate(difference) {
+    //Arrange the difference of date in days, hours, minutes, and seconds format
+    let days = Math.floor(difference / (1000 * 60 * 60 * 24))
+    let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+    let seconds = Math.floor((difference % (1000 * 60)) / 1000)
+    let total = ''
+    if (days > 0) total += days + 'д '
+    if (hours > 0 && days > 0) total += hours + ':'
+    total += minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0')
+    return total
+}
+const getV = () => {
+    const r = Object.assign({}, currentTime)
+    console.log(r)
+    return r
+}
 </script>
 
 <template>
+    <Toast position="bottom-right">
+        <template #message="slotProps"> {{ 'ffs' + getV()._value }}</template>
+    </Toast>
     <DataTable
         v-model:selection="selectedUser"
-        :value="products"
+        :value="contacts"
         selection-mode="single"
         data-key="id_user"
         class="p-datatable-sm text-sm w-full overflow-y-auto"
         row-group-mode="subheader"
-        group-rows-by="status_group"
-        sort-field="status_group"
+        group-rows-by="status_group_id"
+        sort-mode="multiple"
+        :multi-sort-meta="multiSort"
         scrollable
         scroll-height="100%"
+        @row-click="
+            (e) => {
+                console.log('click!')
+                show()
+            }
+        "
     >
-        <Column field="status_group" header="!"></Column>
+        <Column field="status_group_id" header="!"></Column>
         <Column field="avatar" header="">
             <template #body="{ data }">
                 <Avatar
@@ -77,6 +138,11 @@ const selectedUser = ref(null)
                 </Avatar>
             </template>
         </Column>
+        <Column column-key="time" header="=">
+            <template #body="{ data }">
+                <span class="time">{{ time(data.status_id, data.status_dttmcr) }}</span>
+            </template>
+        </Column>
         <Column field="name" header="Имя">
             <template #body="{ data }">
                 <span class="name">{{ data.last_name + ' ' + data.first_name }}</span>
@@ -98,9 +164,14 @@ const selectedUser = ref(null)
 
 <style scoped>
 .phone {
-    font-family: 'RobotoMono' !important;
+    font-family: 'Roboto Mono' !important;
     font-weight: 700;
     font-style: normal;
+}
+.time {
+    font-family: 'Roboto Mono' !important;
+    font-size: 12px;
+    text-wrap: nowrap;
 }
 .custom-badge {
     position: absolute;
