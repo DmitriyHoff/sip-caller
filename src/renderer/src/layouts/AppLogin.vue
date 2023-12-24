@@ -48,12 +48,13 @@ async function onClick() {
     hasError.value = false
     await timeout(1500)
     try {
-        const token = await userLogin()
-        if (!token) throw new Error('Ошибка авторизации')
-        const credentials = await getSipCredentials(token)
+        // const token = await userLogin()
+        // if (!token) throw new Error('Ошибка авторизации')
+        // const credentials = await getSipCredentials(token)
 
         // дальше попытка подключения и регистрации в АТС
-        window.api.sendLoginRequest({ token, credentials })
+        // window.api.sendLoginRequest({ token, credentials })
+        window.api.sendLoginRequest({ token: '', credentials: '' })
     } catch (error) {
         hasError.value = true
         if (axios.isAxiosError(error)) {
@@ -76,7 +77,10 @@ window.api.onLoginResponse((response) => {
 </script>
 
 <template>
-    <div class="surface-card p-4 shadow-2 border-noround w-full h-full lg:w-6">
+    <form
+        class="surface-card p-4 shadow-2 border-noround w-full h-full lg:w-6"
+        @submit.prevent="() => onClick()"
+    >
         <div class="text-center mb-5">
             <img src="../assets/logo.svg" alt="Image" height="80" class="mb-3" />
             <div class="text-900 text-3xl font-medium mb-3">Добро пожаловать!</div>
@@ -107,7 +111,7 @@ window.api.onLoginResponse((response) => {
                     plain
                     text
                     raised
-                    @click="(e) => onClick(e)"
+                    type="submit"
                 >
                     <div class="w-2rem h-2rem">
                         <ProgressSpinner
@@ -119,10 +123,9 @@ window.api.onLoginResponse((response) => {
                     </div>
 
                     <span class="mr-6">Авторизоваться</span>
-                    <!-- <svg-icon type="mdi" :path="icon" :size="24"></svg-icon> -->
                 </Button>
                 <span v-if="hasError" class="text-xs text-red-500">{{ errorMessage }}</span>
             </div>
         </div>
-    </div>
+    </form>
 </template>

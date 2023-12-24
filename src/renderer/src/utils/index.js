@@ -29,6 +29,9 @@ function setThemeDependency() {
     })
 }
 
+/** Генерирует `hash` с соответствующим строке цветом
+ * @param {String} str Строка для генерации цвета
+ */
 function stringToColor(str) {
     let hash = 0
     let color = '#'
@@ -51,6 +54,11 @@ function stringToColor(str) {
     return color
 }
 
+/**
+ * Вовращает инициалы в фомате `XX` на основе строки
+ * @param {String} str Строка с именем
+ * @returns Инициалы на основе строки
+ */
 function stringToInitials(str) {
     const names = str.split(' ')
     let initials = names[0].substring(0, 1).toUpperCase()
@@ -60,4 +68,26 @@ function stringToInitials(str) {
     }
     return initials
 }
-export { timeout, setDarkTheme, setThemeDependency, stringToColor, stringToInitials }
+/**
+ * Возвращает относительную яркость цвета
+ * @param {String} colorHash hash-строка цвета в формате
+ */
+function getColorRelativeLuminance(colorHash) {
+    const match = colorHash.substring(1).match(/.{1,2}/g)
+
+    const [R, G, B] = match
+    const red = parseInt(R, 16)
+    const green = parseInt(G, 16)
+    const blue = parseInt(B, 16)
+
+    const relativeLuminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue
+    return relativeLuminance
+}
+export {
+    timeout,
+    setDarkTheme,
+    setThemeDependency,
+    stringToColor,
+    stringToInitials,
+    getColorRelativeLuminance
+}

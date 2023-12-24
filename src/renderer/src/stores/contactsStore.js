@@ -5,19 +5,22 @@ import axios from 'axios'
 import { useMessagesStore } from './messagesStore'
 import { UserContact } from '../classes/UserContact'
 
+// временный список
+import contactsList from '../data/contactsList'
+
 export const useContactsStore = defineStore('contacts', () => {
-    const messagesStore = useMessagesStore()
-    const { messages } = storeToRefs(messagesStore)
+    //const messagesStore = useMessagesStore()
+    //const { messages } = storeToRefs(messagesStore)
 
     const contacts = ref([])
 
     async function load() {
         try {
-            const response = await axios.get(`${window.api.SERVER_URL}/references/sipUsers`)
-            const list = response.data
+            // const response = await axios.get(`${window.api.SERVER_URL}/references/sipUsers`)
+            const list = contactsList //response.data
             const aList = list.map((item) => new UserContact(item))
             contacts.value = aList
-
+            /*
             messagesStore.onIncomingMessage = () => {
                 console.log('-- onIncomingMessage --')
                 updateList()
@@ -25,16 +28,12 @@ export const useContactsStore = defineStore('contacts', () => {
             while (!messages.value.isEmpty) {
                 updateList()
             }
+            */
         } catch (error) {
             console.log(error)
         }
     }
-    // function updateStatus(userId, status) {
-    //     const item = contacts.value.find((el) => el.id_user === userId)
-    //     if (item) {
-    //         item.status = status
-    //     }
-    // }
+    /*
     function updateList() {
         if (!messages.value.isEmpty) {
             const data = messages.value.pull()
@@ -45,5 +44,6 @@ export const useContactsStore = defineStore('contacts', () => {
             }
         }
     }
-    return { contacts, load, /*updateStatus*/}
+    */
+    return { contacts, load }
 })

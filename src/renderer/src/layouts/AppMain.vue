@@ -1,10 +1,11 @@
 <script setup>
 import TabMenu from 'primevue/tabmenu'
+import UserInfo from '../components/UserInfo.vue'
 import { ref, watch } from 'vue'
 import router from '../router'
 //import { useSipStore } from '../stores/sipStore'
-import { useContactsStore } from '../stores/contactsStore'
-import { useMessagesStore } from '../stores/messagesStore'
+import { useContactsStore } from '../stores/contactsStore' // ✨
+import { useMessagesStore } from '../stores/messagesStore' // ✨
 import { timeout, setThemeDependency } from '../utils'
 import { ConnectionError, RegistrationError } from '../services/sip-phone' // ✨
 import { storeToRefs } from 'pinia'
@@ -123,7 +124,10 @@ const items = ref([
 <template>
     <div class="flex h-full w-full flex-column font-roboto">
         <div class="flex-none card text-sm">
-            <TabMenu :model="items" />
+            <div class="flex flex-row justify-content-between align-content-center">
+                <TabMenu :model="items" />
+                <UserInfo class="text-color-red-400" />
+            </div>
         </div>
         <router-view />
     </div>
