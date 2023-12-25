@@ -68,29 +68,35 @@ app.whenReady().then(async () => {
             }
         }
     })
-    
+
     ipcMain.on(AppEvent.SipInvite, async (event, params) => {
         console.log('electron: sip-invite', params)
-        callWindow.init().then(() => {
+        callWindow.init()
+        callWindow.events.on('ready-to-show', () => {
             callWindow.browserWindow.webContents.send(AppEvent.SipInvite, params)
             callWindow.show()
         })
     })
+
     ipcMain.on(AppEvent.PhoneAcceptClick, async (event, params) => {
         console.log('electron: phone-accept-click')
         mainWindow.browserWindow.webContents.send(AppEvent.PhoneAcceptClick, params)
     })
+
     ipcMain.on(AppEvent.PhoneCancellClick, async (event, params) => {
         console.log('electron: phone-cancel-click')
         mainWindow.browserWindow.webContents.send(AppEvent.PhoneCancellClick, params)
     })
+
     ipcMain.on(AppEvent.SipConnect, () => {
         isLoggedIn = true
         console.log('electron: sip-connect')
     })
+
     ipcMain.on(AppEvent.SipDisconnect, () => {
         console.log('electron: sip-disconnect')
     })
+
     ipcMain.on(AppEvent.SipBeginCall, () => {
         console.log('electron: sip-begin-call')
         //callWindow.browserWindow.webContents.send('sip-begin-call')
@@ -98,9 +104,12 @@ app.whenReady().then(async () => {
         callWindow.show()
         callWindow.browserWindow.webContents.send(AppEvent.SipBeginCall)
     })
+
     ipcMain.on('sip-end-call', () => {
         console.log('electron: sip-end-call')
-        callWindow.browserWindow.close()
+        if (!callWindow.browserWindow.isDestroyed()) {
+            callWindow.browserWindow.close()
+        }
     })
 
     ipcMain.handle(AppEvent.ShouldUseDarkColors, () => {
@@ -111,12 +120,12 @@ app.whenReady().then(async () => {
     nativeTheme.on('updated', async () => {
         console.log('electron:system theme updated!', nativeTheme.shouldUseDarkColors)
         try {
-            if (loginWindow.browserWindow)
+            if (!loginWindow.browserWindow.isDestroyed())
                 await loginWindow.browserWindow.webContents.send(
                     'native-theme-updated',
                     nativeTheme.shouldUseDarkColors
                 )
-            if (mainWindow.browserWindow)
+            if (!mainWindow.browserWindow.isDestroyed())
                 await mainWindow.browserWindow.webContents.send(
                     'native-theme-updated',
                     nativeTheme.shouldUseDarkColors

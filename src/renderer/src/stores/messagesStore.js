@@ -8,6 +8,7 @@ export const useMessagesStore = defineStore('messages', () => {
     const socket = ref(null)
     const messages = ref(new Queue())
     const onIncomingMessage = ref(null)
+
     function connectSocket() {
         socket.value = new WebSocket(window.api.WEB_SOCKET_SERVER)
         socket.value.onmessage = async (msg) => {

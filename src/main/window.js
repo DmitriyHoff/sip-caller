@@ -19,6 +19,9 @@ export default class Window {
         this._browserWindowConstructorOptions = browserWindowConstructorOptions
     }
     async init() {
+        if (arguments.length > 0) {
+            this._browserWindowConstructorOptions.webPreferences.additionalArguments = arguments
+        }
         // Create the browser window.
         this._browserWindow = new BrowserWindow(this._browserWindowConstructorOptions)
 
@@ -48,6 +51,9 @@ export default class Window {
 
     hide() {
         this._browserWindow.hide()
+    }
+    close() {
+        this._browserWindow.close()
     }
     get events() {
         return this._emiter

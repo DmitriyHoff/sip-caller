@@ -69,19 +69,21 @@ class SipPhone extends EventTarget {
             transportOptions: { server },
             uri: this._uri,
             delegate,
-            userAgentString: 'BaltAssistanсe CallCenter 0.0.1',
+            userAgentString: window.api.USER_AGENT,
             logBuiltinEnabled: true, // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
-                iceGatheringTimeout: 500,
+                iceGatheringTimeout: 3000,
                 peerConnectionConfiguration: {
                     iceServers: [
                         {
-                            urls: ['stun:stun.gippars.ru:3478'],
+                            urls: [window.api.STUN_SERVER_URL],
                             username: '',
                             credential: ''
                         }
-                    ]
+                    ],
+                    iceTransportPolicy: 'all',
+                    rtcpMuxPolicy: 'require'
                 }
             }
         }
@@ -92,10 +94,11 @@ class SipPhone extends EventTarget {
 
         this._registererStateChangeListener = registererStateChangeListener
 
-        // this._userAgent.delegate.onInvite = (invitation) => {
-        //     //this._userAgent.delegate.onInvite(invitation)
-        //     this.onIncomingCall(invitation)
-        // }
+        this._userAgent.delegate.onInvite = (invitation) => {
+            //this._userAgent.delegate.onInvite(invitation)
+            this.onIncomingCall(invitation)
+        }
+
         this._responseListener = responseListener
     }
 
@@ -162,6 +165,7 @@ class SipPhone extends EventTarget {
                      */
                     onTrying: (response) => {
                         console.log('onTrying: ', { response })
+                        this._responseListener({ type: 'trying', response })
                     }
                 }
             }

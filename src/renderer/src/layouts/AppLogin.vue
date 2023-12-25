@@ -14,6 +14,9 @@ const errorMessage = ref(null)
 const hasError = ref(false)
 
 async function userLogin() {
+    /* Если авторизация отключена в .env */
+    if (window.api.FROG_AUTH_OFF) return 'token'
+
     const response = await axios.post(`${window.api.SERVER_URL}/user/login`, {
         login: login.value,
         password: password.value
@@ -23,6 +26,13 @@ async function userLogin() {
 }
 
 async function getSipCredentials(token) {
+    /* Если авторизация отключена в .env */
+    if (window.api.FROG_AUTH_OFF)
+        return {
+            login_name: 'Гофф Дмитрий',
+            login_id: 1572
+        }
+
     const response = await axios.post(
         `${window.api.SERVER_URL}/user/sipCredentials`,
         {

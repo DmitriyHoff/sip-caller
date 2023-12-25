@@ -1,29 +1,37 @@
 <script setup>
 import { ref } from 'vue'
+import ring from '../assets/sounds/ring-default.mp3'
+import call from '../assets/sounds/call.mp3'
 
 const callerName = ref('')
 const callerURI = ref('')
 const type = ref()
 const isAccepted = ref(false)
 
+const callSound = new Audio(call)
+callSound.loop = true
+callSound.play()
+
 // ответ на звонок
 function answerCall() {
     isAccepted.value = true
+    callSound.pause()
     window.api.sendPhoneAcceptClick()
 }
 
 // ответ на звонок
 function rejectCall() {
     isAccepted.value = false
+    callSound.pause()
     window.api.sendPhoneCancellClick()
 }
 
-window.api.onSipInvite((params) => {
-    const { from, uri } = params
-    callerName.value = from
-    callerURI.value = uri
-    console.log({ params })
-})
+// window.api.onSipInvite((params) => {
+//     const { from, uri } = params
+//     callerName.value = from
+//     callerURI.value = uri
+//     console.log({ params })
+// })
 </script>
 
 <template>

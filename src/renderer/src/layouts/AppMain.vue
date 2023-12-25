@@ -95,8 +95,15 @@ window.api.onLoginRequest(async (data) => {
         await sipStore.register()
         console.log('registered...')
         await contactsStore.load()
-        messagesStore.connectSocket()
-        contactsStore.load()
+
+        if (window.api.FROG_AUTH_OFF) {
+            // Пропустить загрузку контактов
+            await contactsStore.load()
+
+            // Пропустить подключение к WS,
+            messagesStore.connectSocket()
+        }
+        // contactsStore.load()
         // window.api.sendLoginResponse({ status: 'OK' })
     } catch (error) {
         const errResponse = {
@@ -127,8 +134,8 @@ window.api.onPhoneCancellClick(() => {
     window.api.sendSipEndCall()
 })
 window.api.onPhoneAcceptClick(() => {
-console.log('ANSWER')
-    //sipStore.answer()
+    console.log('ANSWER')
+    sipStore.answer()
     window.api.sendSipBeginCall()
 })
 // store.call(600)
