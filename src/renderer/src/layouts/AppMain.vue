@@ -96,11 +96,11 @@ window.api.onLoginRequest(async (data) => {
         console.log('registered...')
         await contactsStore.load()
 
-        if (window.api.FROG_AUTH_OFF) {
-            // Пропустить загрузку контактов
+        if (!window.api.FROG_AUTH_OFF) {
+            // Загрузка контактов
             await contactsStore.load()
 
-            // Пропустить подключение к WS,
+            // подключение к WS
             messagesStore.connectSocket()
         }
         // contactsStore.load()

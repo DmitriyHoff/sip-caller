@@ -6,25 +6,21 @@ import { stringToColor, stringToInitials, getColorRelativeLuminance } from '../u
 
 const props = defineProps({ name: String, statusId: Number })
 
-const bgColor = ref(stringToColor(props.name))
-const luminance = ref(getColorRelativeLuminance(bgColor.value))
-const initials = ref(stringToInitials(props.name))
-const textColor = () => (luminance.value > 0xaa ? '#333' : '#fff')
-const style = ref({
-    'background-color': bgColor.value,
-    color: textColor()
-})
+const bgColor = () => stringToColor(props.name)
+const luminance = () => getColorRelativeLuminance(bgColor())
+const initials = () => stringToInitials(props.name)
+const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
 </script>
 
 <template>
-    <Avatar :label="initials" class="mr-2" :style="style">
+    <Avatar class="mr-2" :style="{ 'background-color': bgColor(), color: textColor() }">
         <template #default>
             <div
                 style="width: 100%; height: 100%; position: relative"
                 class="flex align-items-center w-full justify-content-center"
             >
                 <p class="">
-                    {{ initials }}
+                    {{ initials() }}
                 </p>
 
                 <svg-icon
