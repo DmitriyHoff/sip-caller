@@ -61,14 +61,50 @@ class SipPhone extends EventTarget {
         const { uri, login, password, server } = options
         this._uri = UserAgent.makeURI(uri)
         this._constraints = { audio: true, video: false }
-
+        this._delegate = {
+            onConnect: () => {
+                if (typeof delegate.onConnect === 'function') {
+                    delegate.onConnect()
+                }
+            },
+            onDisconnect: (error) => {
+                if (typeof delegate.onDisconnect === 'function') {
+                    delegate.onDisconnect(error)
+                }
+            },
+            onInvite: (invitation) => {
+                this.onIncomingCall(invitation)
+                console.log(
+                    `typeof delegate.onInvite === 'function': `,
+                    typeof delegate.onInvite === 'function'
+                )
+                if (typeof delegate.onInvite === 'function') {
+                    delegate.onInvite(invitation)
+                }
+            },
+            onMessage: (message) => {
+                if (typeof delegate.onMessage === 'function') {
+                    delegate.onMessage(message)
+                }
+            },
+            onNotify: (notification) => {
+                if (typeof delegate.onNotify === 'function') {
+                    delegate.onNotify(notification)
+                }
+            },
+            onRegister: (register) => {
+                if (typeof delegate.onRegister === 'function') {
+                    delegate.onRegister(register)
+                }
+            }
+        }
         // UserAgent Options
         this._userAgentOptions = {
             authorizationPassword: password,
             authorizationUsername: login,
             transportOptions: { server },
             uri: this._uri,
-            delegate,
+            delegate: this._delegate,
             userAgentString: window.api.USER_AGENT,
             logBuiltinEnabled: true, // отключаю логирование
             logConfiguration: false,
@@ -94,10 +130,10 @@ class SipPhone extends EventTarget {
 
         this._registererStateChangeListener = registererStateChangeListener
 
-        this._userAgent.delegate.onInvite = (invitation) => {
-            //this._userAgent.delegate.onInvite(invitation)
-            this.onIncomingCall(invitation)
-        }
+        // this._userAgent.delegate.onInvite = (invitation) => {
+        //     //this._userAgent.delegate.onInvite(invitation)
+        //     this.onIncomingCall(invitation)
+        // }
 
         this._responseListener = responseListener
     }
