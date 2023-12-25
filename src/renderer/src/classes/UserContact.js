@@ -1,5 +1,5 @@
 import { SipUser } from './SipUser'
-import { UserStatusGroup } from '.'
+import { UserStatusGroup } from './UserStatusGroup'
 // eslint-disable-next-line no-unused-vars
 import { SocketMessage } from './SocketMessage'
 
@@ -19,7 +19,6 @@ export class UserContact extends SipUser {
     constructor(data) {
         super(data)
         this.status_group_id = UserStatusGroup.getStatusGroup(data.status_id)
-        console.log(`${this.last_name} ${this.status_dttmcr}`)
     }
 
     /**
@@ -36,9 +35,8 @@ export class UserContact extends SipUser {
 
     /** Устанавливает статус и идентификатор группы статуса */
     setStatus(statusId) {
-        console.log(`${this.last_name} ${this.first_name} | ${this.status_id} --> ${statusId}`)
+        // console.log(`${this.last_name} ${this.first_name} | ${this.status_id} --> ${statusId}`)
         this.status_id = statusId
         this.status_group_id = UserStatusGroup.getStatusGroup(statusId)
-        
     }
 }

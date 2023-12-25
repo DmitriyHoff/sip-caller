@@ -23,13 +23,8 @@ export const useMessagesStore = defineStore('messages', () => {
                     case 'tablo':
                         switch (type.module) {
                             case 'main_info':
-                                // console.log('Main_info: ', dataJSON)
                                 messages.value.push(new SocketMessage(dataJSON))
 
-                                console.log(
-                                    `typeof onIncomingMessage.value === 'function': `,
-                                    typeof onIncomingMessage.value
-                                )
                                 if (typeof onIncomingMessage.value === 'function')
                                     onIncomingMessage.value()
                                 break

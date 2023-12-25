@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { UserStatusGroup } from '../classes'
+import { UserStatusGroup } from '../classes/UserStatusGroup'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { stringToColor, stringToInitials, getColorRelativeLuminance } from '../utils'
 
@@ -10,10 +10,10 @@ const bgColor = ref(stringToColor(props.name))
 const luminance = ref(getColorRelativeLuminance(bgColor.value))
 const initials = ref(stringToInitials(props.name))
 const textColor = () => (luminance.value > 0xaa ? '#333' : '#fff')
-const style = {
+const style = ref({
     'background-color': bgColor.value,
     color: textColor()
-}
+})
 </script>
 
 <template>

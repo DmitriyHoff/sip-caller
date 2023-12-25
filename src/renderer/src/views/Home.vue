@@ -18,9 +18,9 @@ import MessagesTable from '../components/MessagesTable.vue'
                 </SplitterPanel>
             </Splitter>
         </SplitterPanel>
-        <SplitterPanel style="min-height: 200px;" class="flex align-items-center justify-content-center overflow-y-auto font-roboto">
+        <!-- <SplitterPanel style="min-height: 200px;" class="flex align-items-center justify-content-center overflow-y-auto font-roboto">
             <MessagesTable />
-        </SplitterPanel>
+        </SplitterPanel> -->
     </Splitter>
 </template>
 <style scoped>

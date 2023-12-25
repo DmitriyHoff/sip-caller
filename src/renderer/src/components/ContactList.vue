@@ -4,8 +4,9 @@ import Toast from 'primevue/toast'
 import { ref } from 'vue'
 import { useContactsStore } from '../stores/contactsStore'
 import { storeToRefs } from 'pinia'
-import { UserStatusGroup } from '../classes'
+import { UserStatusGroup } from '../classes/UserStatusGroup'
 import { useToast } from 'primevue/usetoast'
+import Tag from 'primevue/tag'
 
 const contactsStore = useContactsStore()
 const { contacts } = storeToRefs(contactsStore)
@@ -20,7 +21,6 @@ const toast = useToast()
 const show = () => {
     toast.add({ severity: 'info', summary: 'Info', detail: currentTime.value, life: 3000 })
 }
-console.log(contacts)
 const selectedUser = ref(null)
 
 // параметры сортировки таблицы
@@ -73,7 +73,7 @@ const getV = () => {
         :value="contacts"
         selection-mode="single"
         data-key="id_user"
-        class="p-datatable-sm text-sm w-full overflow-y-auto"
+        class="p-datatable-sm text-sm w-full overflow-y-auto no-header"
         row-group-mode="subheader"
         group-rows-by="status_group_id"
         sort-mode="multiple"
@@ -96,14 +96,25 @@ const getV = () => {
                 />
             </template>
         </Column>
-        <Column column-key="time" header="=">
+        <Column column-key="time" header="" bodyStyle="text-align:right">
             <template #body="{ data }">
-                <span class="time">{{ time(data.status_id, data.status_dttmcr) }}</span>
+                <Tag
+                    class="time text-gray-900"
+                    :class="{
+                        'bg-green-500': UserStatusGroup.isOnline(data.status_id),
+                        'bg-orange-400': UserStatusGroup.isWork(data.status_id),
+                        'bg-yellow-400': UserStatusGroup.isLanchBreak(data.status_id),
+                        'bg-gray-400': UserStatusGroup.isOffline(data.status_id)
+                    }"
+                    >{{ time(data.status_id, data.status_dttmcr) }}</Tag
+                >
             </template>
         </Column>
         <Column field="name" header="Имя">
             <template #body="{ data }">
-                <span class="name m-0 text-color">{{ data.last_name + ' ' + data.first_name }}</span>
+                <span class="name m-0 text-color">{{
+                    data.last_name + ' ' + data.first_name
+                }}</span>
                 <p class="text-xs text-color-secondary m-0 p-0 py-1">{{ data.position }}</p>
             </template>
         </Column>
@@ -121,7 +132,10 @@ const getV = () => {
     </DataTable>
 </template>
 
-<style scoped>
+<style>
+.p-datatable-thead {
+    display: none !important;
+}
 .phone {
     font-family: 'RobotoMono' !important;
     font-weight: 700;
@@ -129,7 +143,9 @@ const getV = () => {
 }
 .time {
     font-family: 'RobotoMono' !important;
-    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 10px;
     text-wrap: nowrap;
 }
 </style>

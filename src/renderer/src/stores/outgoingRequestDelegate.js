@@ -16,6 +16,7 @@ export default {
      */
     onProgress: (response) => {
         console.log('OnProgress: ', { response })
+        window.api.sendSipBeginCall()
     },
 
     /**

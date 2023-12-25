@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { SipPhone } from '../services/sip-phone'
 import { ref } from 'vue'
 
-import delegate from './userAgentDelegate'
+
 
 export const useSipStore = defineStore('phone', () => {
     // const sipOptions = {
@@ -27,7 +27,7 @@ export const useSipStore = defineStore('phone', () => {
     // Моя звонилка
     const phone = ref(null)
 
-    function init(options) {
+    function init(options, delegate) {
         phone.value = new SipPhone(
             options,
             delegate,
@@ -43,10 +43,10 @@ export const useSipStore = defineStore('phone', () => {
 
     function terminate() {
         phone.value.hangUp()
-        window.api.sendSipEndCall()
+        // window.api.sendSipEndCall()
     }
 
-    function accept() {
+    function answer() {
         phone.value.answer()
     }
 
@@ -70,7 +70,7 @@ export const useSipStore = defineStore('phone', () => {
         register,
         call,
         terminate,
-        accept,
+        answer,
         registererState,
         responseCallback
     }

@@ -1,20 +1,21 @@
 // билиотеки
 import { app, BrowserWindow, ipcMain, nativeTheme, systemPreferences } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-
+import { AppEvent } from './events'
 // окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'
 import CallWindow from './windowCall'
 
+const windows = []
 const mainWindow = new MainWindow()
 const loginWindow = new LoginWindow()
 const callWindow = new CallWindow()
-
+windows.push(mainWindow, loginWindow, callWindow)
 let isLoggedIn = false
 
 const showWindow = (win) => win.show()
-mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
+// mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
 // callWindow.events.on('ready-to-show', showWindow)
 loginWindow.events.on('ready-to-show', showWindow)
 
@@ -33,71 +34,76 @@ app.whenReady().then(async () => {
     // инициализация всех окон
     mainWindow.init()
     loginWindow.init()
-    callWindow.init()
+    // callWindow.init()
 
-    app.on('activate', async function () {
+    app.on(AppEvent.Activate, async function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            if (isLoggedIn) mainWindow.init()
-            else loginWindow.init()
+            loginWindow.init()
+            mainWindow.init()
         }
     })
 
-    ipcMain.on('test', async (event, params) => {
-        console.log('main:test')
-    })
-
     /* Запрос авторизации от loginWindow */
-    ipcMain.on('login-request', async (event, params) => {
+    ipcMain.on(AppEvent.LoginRequest, async (event, params) => {
         console.log('electron: login-request')
         console.log({ params })
-        mainWindow.show()
-        mainWindow.browserWindow.webContents.send('login-request', params)
+        // mainWindow.show()
+        mainWindow.browserWindow.webContents.send(AppEvent.LoginRequest, params)
     })
 
     /* Ответ основного окна на запрос авторизации */
-    ipcMain.on('login-response', async (event, params) => {
+    ipcMain.on(AppEvent.LoginResponse, async (event, params) => {
         console.log('electron: login-response', params)
 
         if (!params.error) {
             loginWindow.browserWindow.close()
             mainWindow.show()
         } else {
-            loginWindow.browserWindow.webContents.send('login-response', params)
+            loginWindow.browserWindow.webContents.send(AppEvent.LoginResponse, params)
             const micUse = await systemPreferences.askForMediaAccess('microphone')
             if (!micUse) {
                 alert('Error')
             }
         }
     })
-    ipcMain.on('phone-accept-click', async () => {
+    
+    ipcMain.on(AppEvent.SipInvite, async (event, params) => {
+        console.log('electron: sip-invite', params)
+        callWindow.init().then(() => {
+            callWindow.browserWindow.webContents.send(AppEvent.SipInvite, params)
+            callWindow.show()
+        })
+    })
+    ipcMain.on(AppEvent.PhoneAcceptClick, async (event, params) => {
         console.log('electron: phone-accept-click')
+        mainWindow.browserWindow.webContents.send(AppEvent.PhoneAcceptClick, params)
     })
-    ipcMain.on('sip-invite', async () => {
-        console.log('electron: sip-invite')
-    })
-    ipcMain.on('phone-cancel-click', () => {
+    ipcMain.on(AppEvent.PhoneCancellClick, async (event, params) => {
         console.log('electron: phone-cancel-click')
+        mainWindow.browserWindow.webContents.send(AppEvent.PhoneCancellClick, params)
     })
-    ipcMain.on('sip-connect', () => {
+    ipcMain.on(AppEvent.SipConnect, () => {
         isLoggedIn = true
         console.log('electron: sip-connect')
     })
-    ipcMain.on('sip-disconnect', () => {
+    ipcMain.on(AppEvent.SipDisconnect, () => {
         console.log('electron: sip-disconnect')
     })
-    ipcMain.on('sip-begin-call', () => {
+    ipcMain.on(AppEvent.SipBeginCall, () => {
         console.log('electron: sip-begin-call')
         //callWindow.browserWindow.webContents.send('sip-begin-call')
+        callWindow.init()
         callWindow.show()
-        callWindow.browserWindow.webContents.send('sip-begin-call')
+        callWindow.browserWindow.webContents.send(AppEvent.SipBeginCall)
     })
     ipcMain.on('sip-end-call', () => {
         console.log('electron: sip-end-call')
+        callWindow.browserWindow.close()
     })
 
-    ipcMain.handle('should-use-dark-colors', () => {
+    ipcMain.handle(AppEvent.ShouldUseDarkColors, () => {
         console.log('electron: should-use-dark-colors: ', nativeTheme.shouldUseDarkColors)
         return nativeTheme.shouldUseDarkColors
     })
@@ -105,19 +111,17 @@ app.whenReady().then(async () => {
     nativeTheme.on('updated', async () => {
         console.log('electron:system theme updated!', nativeTheme.shouldUseDarkColors)
         try {
-
-
-            await loginWindow.browserWindow.webContents.send(
-                'native-theme-updated',
-                nativeTheme.shouldUseDarkColors
-            )
-
-            await mainWindow.browserWindow.webContents.send(
-                'native-theme-updated',
-                nativeTheme.shouldUseDarkColors
-            )
-        }
-        catch (error) {
+            if (loginWindow.browserWindow)
+                await loginWindow.browserWindow.webContents.send(
+                    'native-theme-updated',
+                    nativeTheme.shouldUseDarkColors
+                )
+            if (mainWindow.browserWindow)
+                await mainWindow.browserWindow.webContents.send(
+                    'native-theme-updated',
+                    nativeTheme.shouldUseDarkColors
+                )
+        } catch (error) {
             console.log(error)
         }
     })

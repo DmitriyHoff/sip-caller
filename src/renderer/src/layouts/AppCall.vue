@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 
-const callerName = ref('Caller Name +7(909)1234567')
+const callerName = ref('')
+const callerURI = ref('')
+const type = ref()
 const isAccepted = ref(false)
 
 // ответ на звонок
@@ -15,6 +17,13 @@ function rejectCall() {
     isAccepted.value = false
     window.api.sendPhoneCancellClick()
 }
+
+window.api.onSipInvite((params) => {
+    const { from, uri } = params
+    callerName.value = from
+    callerURI.value = uri
+    console.log({ params })
+})
 </script>
 
 <template>
@@ -26,7 +35,8 @@ function rejectCall() {
         </div>
 
         <div class="flex align-items-center justify-content-center m-2">
-            <span class="font-light text-white text-xl">{{ callerName }}</span>
+            <p class="font-light text-white">{{ callerName }}</p>
+            <p class="font-light text-white">{{ callerURI }}</p>
         </div>
         <div class="flex align-items-center justify-content-center m-2">
             <Button

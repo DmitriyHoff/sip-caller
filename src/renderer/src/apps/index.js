@@ -16,7 +16,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ScrollPanel from 'primevue/scrollpanel'
 import ProgressBar from 'primevue/progressbar'
-import ToastService from 'primevue/toastservice';
+import Tag from 'primevue/tag'
+import ToastService from 'primevue/toastservice'
 import router from '../router'
 import App from '../layouts/AppMain.vue'
 
@@ -46,6 +47,7 @@ app.component('ScrollPanel', ScrollPanel)
 app.component('SplitButton', SplitButton)
 app.component('Splitter', Splitter)
 app.component('SplitterPanel', SplitterPanel)
+// app.component('Tag', Tag)
 app.component('Textarea', Textarea)
 
 

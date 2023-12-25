@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import dotenv from 'dotenv'
+import { AppEvent } from '../main/events'
 dotenv.config()
 
 // Custom APIs for renderer
@@ -9,62 +10,73 @@ const api = {
         ipcRenderer.send('test')
     },
 
+    // Отправляется из Call Window
     sendPhoneAcceptClick: () => {
-        ipcRenderer.send('phone-accept-click')
+        ipcRenderer.send(AppEvent.PhoneAcceptClick)
     },
     sendPhoneCancellClick: () => {
-        ipcRenderer.send('phone-cancel-click')
+        ipcRenderer.send(AppEvent.PhoneCancellClick)
     },
+    onPhoneAcceptClick: (callback) => {
+        ipcRenderer.on(AppEvent.PhoneAcceptClick, (_event, value) => callback(value))
+    },
+    onPhoneCancellClick: (callback) => {
+        ipcRenderer.on(AppEvent.PhoneCancellClick, (_event, value) => callback(value))
+    },
+
     sendSipConnect: () => {
-        ipcRenderer.send('sip-connect')
+        ipcRenderer.send(AppEvent.SipConnect)
     },
     sendSipDisconnect: (error) => {
-        ipcRenderer.send('sip-disconnect', error)
+        ipcRenderer.send(AppEvent.SipDisconnect, error)
     },
     sendSipInvite: (invitation) => {
-        ipcRenderer.send('sip-invite', invitation)
+        ipcRenderer.send(AppEvent.SipInvite, invitation)
+    },
+    onSipInvite: (callback) => {
+        ipcRenderer.on(AppEvent.SipInvite, (_event, value) => callback(value))
     },
     sendSipMessage: (message) => {
-        ipcRenderer.send('sip-message', message)
+        ipcRenderer.send(AppEvent.SipMessage, message)
     },
     sendSipNotify: (notify) => {
-        ipcRenderer.send('sip-notify', notify)
+        ipcRenderer.send(AppEvent.SipNotify, notify)
     },
     sendSipBeginCall: () => {
-        ipcRenderer.send('sip-begin-call')
+        ipcRenderer.send(AppEvent.SipBeginCall)
     },
     onSipBeginCall: () => {
-        ipcRenderer.on('sip-begin-call')
+        ipcRenderer.on(AppEvent.SipBeginCall)
     },
     sendSipEndCall: () => {
-        ipcRenderer.send('sip-end-call')
+        ipcRenderer.send(AppEvent.SipEndCall)
     },
     sendLoginRequest: (data) => {
-        ipcRenderer.send('login-request', data)
+        ipcRenderer.send(AppEvent.LoginRequest, data)
     },
     onLoginRequest: (callback) => {
-        ipcRenderer.on('login-request', (_event, value) => callback(value))
+        ipcRenderer.on(AppEvent.LoginRequest, (_event, value) => callback(value))
     },
     sendLoginResponse: (response) => {
-        ipcRenderer.send('login-response', response)
+        ipcRenderer.send(AppEvent.LoginResponse, response)
     },
     onLoginResponse: (callback) => {
-        ipcRenderer.on('login-response', (_event, value) => callback(value))
+        ipcRenderer.on(AppEvent.LoginResponse, (_event, value) => callback(value))
     },
     sendRegistererStateChange: (state) => {
-        ipcRenderer.send('registerer-state-change', state)
+        ipcRenderer.send(AppEvent.RegistererStateChange, state)
     },
     onRegistererStateChange: (callback) => {
-        ipcRenderer.send('registerer-state-change', (_event, value) => callback(value))
+        ipcRenderer.send(AppEvent.RegistererStateChange, (_event, value) => callback(value))
     },
 
     // информация о системной теме
     shouldUseDarkColors: async () => {
-        return ipcRenderer.invoke('should-use-dark-colors')
+        return ipcRenderer.invoke(AppEvent.ShouldUseDarkColors)
     },
     // изменение системной темы
     onNativeThemeUpdated: async (callback) => {
-        ipcRenderer.on('native-theme-updated', (_event, value) => callback(value))
+        ipcRenderer.on(AppEvent.NativeThemeChanged, (_event, value) => callback(value))
     },
     SERVER_URL: process.env.SERVER_URL,
     WEB_SOCKET_SERVER: process.env.WEB_SOCKET_SERVER
@@ -76,6 +88,7 @@ if (process.contextIsolated) {
     try {
         contextBridge.exposeInMainWorld('electron', electronAPI)
         contextBridge.exposeInMainWorld('api', api)
+        contextBridge.exposeInMainWorld('AppEvent', AppEvent)
     } catch (error) {
         console.error(error)
     }

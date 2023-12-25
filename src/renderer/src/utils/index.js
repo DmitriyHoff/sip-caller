@@ -60,6 +60,7 @@ function stringToColor(str) {
  * @returns Инициалы на основе строки
  */
 function stringToInitials(str) {
+    if(!str) return null
     const names = str.split(' ')
     let initials = names[0].substring(0, 1).toUpperCase()
 

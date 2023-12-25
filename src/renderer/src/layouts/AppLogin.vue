@@ -2,15 +2,11 @@
 import { ref } from 'vue'
 import { timeout, setThemeDependency } from '../utils'
 import axios from 'axios'
-import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiCoffee } from '@mdi/js'
-
-const icon = ref(mdiCoffee)
 
 setThemeDependency()
 
-const login = ref(null)
-const password = ref(null)
+const login = ref('d_hoff')
+const password = ref('QazWsx39')
 const checked = ref(null)
 
 const loading = ref(false)
@@ -48,13 +44,13 @@ async function onClick() {
     hasError.value = false
     await timeout(1500)
     try {
-        // const token = await userLogin()
-        // if (!token) throw new Error('Ошибка авторизации')
-        // const credentials = await getSipCredentials(token)
+        const token = await userLogin()
+        if (!token) throw new Error('Ошибка авторизации')
+        const credentials = await getSipCredentials(token)
 
         // дальше попытка подключения и регистрации в АТС
-        // window.api.sendLoginRequest({ token, credentials })
-        window.api.sendLoginRequest({ token: '', credentials: '' })
+        window.api.sendLoginRequest({ token, credentials })
+        // window.api.sendLoginRequest({ token: '', credentials: '' })
     } catch (error) {
         hasError.value = true
         if (axios.isAxiosError(error)) {

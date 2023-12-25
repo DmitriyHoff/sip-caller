@@ -17,7 +17,7 @@ export default class CallWindow extends Window {
             },
             frame: false,
             alwaysOnTop: true,
-            resizable: false
+            resizable: true // false!
         }
         super(browserWindowConstructorOptions)
     }

@@ -1,6 +1,7 @@
 import Window from './window'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { BrowserWindow } from 'electron'
 
 export default class MainWindow extends Window {
     _htmlPath = 'index.html'

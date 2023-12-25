@@ -36,6 +36,10 @@ export default class Window {
         } else {
             this._browserWindow.loadFile(join(__dirname, `../renderer/${this._htmlPath}`))
         }
+
+        this._browserWindow.on('closed', (event) => {
+            console.log(this.constructor.name, 'closed')
+        })
     }
 
     show() {

@@ -92,10 +92,10 @@ class SipPhone extends EventTarget {
 
         this._registererStateChangeListener = registererStateChangeListener
 
-        this._userAgent.delegate.onInvite = (invitation) => {
-            //this._userAgent.delegate.onInvite(invitation)
-            this.onIncomingCall(invitation)
-        }
+        // this._userAgent.delegate.onInvite = (invitation) => {
+        //     //this._userAgent.delegate.onInvite(invitation)
+        //     this.onIncomingCall(invitation)
+        // }
         this._responseListener = responseListener
     }
 
