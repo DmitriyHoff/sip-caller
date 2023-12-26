@@ -4,6 +4,7 @@ import icon from '../../resources/icon.png?asset'
 
 export default class CallWindow extends Window {
     _htmlPath = 'call.html'
+    _parent
     constructor() {
         const browserWindowConstructorOptions = {
             width: 450,
@@ -19,6 +20,7 @@ export default class CallWindow extends Window {
             alwaysOnTop: true,
             resizable: true // false!
         }
+
         super(browserWindowConstructorOptions)
     }
 }

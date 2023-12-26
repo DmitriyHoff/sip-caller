@@ -47,16 +47,28 @@ const api = {
         ipcRenderer.send(AppEvent.SipNotify, notify)
     },
 
-    sendSipBeginCall: () => {
-        ipcRenderer.send(AppEvent.SipBeginCall)
+    // sendSipBeginCall: () => {
+    //     ipcRenderer.send(AppEvent.SipBeginCall)
+    // },
+
+    // onSipBeginCall: () => {
+    //     ipcRenderer.on(AppEvent.SipBeginCall)
+    // },
+
+    // sendSipEndCall: () => {
+    //     ipcRenderer.send(AppEvent.SipEndCall)
+    // },
+
+    sendSipRegistererStateChanged: (state) => {
+        ipcRenderer.send(AppEvent.SipRegistererStateChanged, state)
     },
 
-    onSipBeginCall: () => {
-        ipcRenderer.on(AppEvent.SipBeginCall)
+    sendSipSessionStateChanged: (state) => {
+        ipcRenderer.send(AppEvent.SipSessionStateChanged, state)
     },
 
-    sendSipEndCall: () => {
-        ipcRenderer.send(AppEvent.SipEndCall)
+    onSipSessionStateChanged: (callback) => {
+        ipcRenderer.on(AppEvent.SipSessionStateChanged, (_event, value) => callback(value))
     },
 
     sendLoginRequest: (data) => {
@@ -96,7 +108,8 @@ const api = {
     WEB_SOCKET_SERVER: process.env.WEB_SOCKET_SERVER,
     FROG_AUTH_OFF: process.env.FROG_AUTH_OFF,
     STUN_SERVER_URL: process.env.STUN_SERVER_URL,
-    USER_AGENT: process.env.USER_AGENT
+    USER_AGENT: process.env.USER_AGENT,
+    SIP_LOGGER: process.env.SIP_LOGGER
 }
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

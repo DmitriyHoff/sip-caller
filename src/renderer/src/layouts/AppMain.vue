@@ -19,7 +19,7 @@ const credentials = reactive({})
 const token = ref(null)
 const contacts = ref(null)
 
-const { registererState, phone } = storeToRefs(sipStore)
+// const { registererState, sessionState, phone } = storeToRefs(sipStore)
 
 sipStore.responseCallback = (response) => {
     console.log('APP: ', response)
@@ -35,9 +35,16 @@ sipStore.responseCallback = (response) => {
     }
 }
 
-watch(registererState, (newState) => {
-    console.log('State updated -> ', newState)
-})
+// // Отслеживаем изменение состояния регистрации
+// watch(registererState, (newState) => {
+//     console.log('Registration state updated -> ', { newState })
+//     window.api.sendSipRegistererStateChanged(newState)
+// })
+// // Отслеживаем изменение состояния сессии
+// watch(sessionState, (newState) => {
+//     console.log('Session state updated -> ', { newState })
+//     // window.api.sendSipSessionStateChanged(newState)
+// })
 
 const delegate = {
     onConnect: () => {
@@ -49,7 +56,6 @@ const delegate = {
         console.log('Disconnect: ', { error })
     },
     onInvite: (invitation) => {
-        console.log({ invitation })
         const { request } = invitation.incomingInviteRequest.transaction
         const params = {
             from: request?.from?.displayName,
@@ -131,12 +137,12 @@ window.api.onLoginRequest(async (data) => {
 
 window.api.onPhoneCancellClick(() => {
     sipStore.terminate()
-    window.api.sendSipEndCall()
+    // window.api.sendSipEndCall()
 })
 window.api.onPhoneAcceptClick(() => {
     console.log('ANSWER')
     sipStore.answer()
-    window.api.sendSipBeginCall()
+    // window.api.sendSipBeginCall()
 })
 // store.call(600)
 

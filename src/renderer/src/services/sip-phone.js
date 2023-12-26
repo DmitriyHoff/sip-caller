@@ -53,10 +53,9 @@ class SipPhone extends EventTarget {
     _userAgent
     _registerer
     _userAgentOptions
-    _registererStateChangeListener
-    _responseListener
+    _callbacks
 
-    constructor(options, delegate, responseListener, registererStateChangeListener) {
+    constructor(options, delegate, callbacks) {
         super()
         const { uri, login, password, server } = options
         this._uri = UserAgent.makeURI(uri)
@@ -66,38 +65,51 @@ class SipPhone extends EventTarget {
                 if (typeof delegate.onConnect === 'function') {
                     delegate.onConnect()
                 }
+                console.log('\u001b[34mConnect')
             },
             onDisconnect: (error) => {
                 if (typeof delegate.onDisconnect === 'function') {
                     delegate.onDisconnect(error)
                 }
+                console.log('\u001b[34mDisconnect')
             },
             onInvite: (invitation) => {
-                this.onIncomingCall(invitation)
-                console.log(
-                    `typeof delegate.onInvite === 'function': `,
-                    typeof delegate.onInvite === 'function'
-                )
+                invitation // test!
+                //console.log('Incoming call...', { invitation })
+                console.log('\u001b[34m' + 'Incoming call: ' + invitation.state)
+                // this._session = invitation
+
+                invitation.stateChange.addListener((state) => {
+                    console.log('INVITATION stateChange...')
+                    this.onSessionStateCange(invitation, state)
+                })
+
                 if (typeof delegate.onInvite === 'function') {
                     delegate.onInvite(invitation)
                 }
+                this._session = invitation
+                console.log('\u001b[34mInvite')
             },
             onMessage: (message) => {
                 if (typeof delegate.onMessage === 'function') {
                     delegate.onMessage(message)
                 }
+                console.log('\u001b[34mMessage')
             },
             onNotify: (notification) => {
                 if (typeof delegate.onNotify === 'function') {
                     delegate.onNotify(notification)
                 }
+                console.log('\u001b[34mNotify')
             },
             onRegister: (register) => {
                 if (typeof delegate.onRegister === 'function') {
                     delegate.onRegister(register)
                 }
+                console.log('\u001b[34mRegister')
             }
         }
+
         // UserAgent Options
         this._userAgentOptions = {
             authorizationPassword: password,
@@ -106,7 +118,7 @@ class SipPhone extends EventTarget {
             uri: this._uri,
             delegate: this._delegate,
             userAgentString: window.api.USER_AGENT,
-            logBuiltinEnabled: true, // отключаю логирование
+            logBuiltinEnabled: window.api.SIP_LOGGER === 'true', // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
                 iceGatheringTimeout: 3000,
@@ -128,14 +140,12 @@ class SipPhone extends EventTarget {
 
         this._userAgent = new UserAgent(this._userAgentOptions)
 
-        this._registererStateChangeListener = registererStateChangeListener
+        this._callbacks = callbacks
 
         // this._userAgent.delegate.onInvite = (invitation) => {
         //     //this._userAgent.delegate.onInvite(invitation)
         //     this.onIncomingCall(invitation)
         // }
-
-        this._responseListener = responseListener
     }
 
     async start() {
@@ -151,7 +161,7 @@ class SipPhone extends EventTarget {
     async register() {
         this._registerer = new Registerer(this._userAgent)
         this._registerer.stateChange.addListener((state) => {
-            this._registererStateChangeListener(state)
+            this._callbacks.registererStateChangeListener(state)
         })
 
         try {
@@ -165,7 +175,7 @@ class SipPhone extends EventTarget {
                      */
                     onAccept: (response) => {
                         console.log('Accept: ', { response })
-                        this._responseListener(response)
+                        this._callbacks.responseListener(response)
                     },
 
                     /**
@@ -174,7 +184,7 @@ class SipPhone extends EventTarget {
                      */
                     onProgress: (response) => {
                         console.log('OnProgress: ', { response })
-                        this._responseListener(response)
+                        this._callbacks.responseListener(response)
                     },
 
                     /**
@@ -183,7 +193,7 @@ class SipPhone extends EventTarget {
                      */
                     onRedirect: (response) => {
                         console.log('onRedirect: ', { response })
-                        this._responseListener(response)
+                        this._callbacks.responseListener(response)
                     },
 
                     /**
@@ -192,7 +202,7 @@ class SipPhone extends EventTarget {
                      */
                     onReject: (response) => {
                         console.log('onReject: ', { response })
-                        this._responseListener(response)
+                        this._callbacks.responseListener(response)
                     },
 
                     /**
@@ -201,7 +211,7 @@ class SipPhone extends EventTarget {
                      */
                     onTrying: (response) => {
                         console.log('onTrying: ', { response })
-                        this._responseListener({ type: 'trying', response })
+                        this._callbacks.responseListener({ type: 'trying', response })
                     }
                 }
             }
@@ -213,7 +223,7 @@ class SipPhone extends EventTarget {
     }
 
     _setupRemoteMedia(invitation) {
-        console.log('SETUP REMOTE MEDIA...')
+        // console.log('SETUP REMOTE MEDIA...')
         const remoteStream = new MediaStream()
         invitation.sessionDescriptionHandler.peerConnection.getReceivers().forEach((receiver) => {
             if (receiver.track) {
@@ -225,24 +235,25 @@ class SipPhone extends EventTarget {
     }
 
     _cleanupMedia() {
-        console.log('CLEAR REMOTE MEDIA...')
+        // console.log('CLEAR REMOTE MEDIA...')
         this._mediaElement.srcObject = null
         this._mediaElement.pause()
     }
 
-    onIncomingCall(invitation) {
-        console.log('Incoming call...', { invitation })
-        console.log(invitation.state)
-        this._session = invitation
-
-        this._session.stateChange.addListener((state) => {
-            console.log('state changed...')
-            this.onSessionStateCange(invitation, state)
-        })
-    }
+    // onIncomingCall(invitation) {
+    //     // console.log('Incoming call...', { invitation })
+    //     // console.log(invitation.state)
+    //     // // this._session = invitation
+    //     // this._session.stateChange.addListener((state) => {
+    //     //     console.log('state changed...')
+    //     //     this.onSessionStateCange(invitation, state)
+    //     // })
+    // }
 
     onSessionStateCange(session, state) {
         console.log(`Session state changed to ${state}`)
+        this._callbacks.sessionStateChangeListener(state)
+
         switch (state) {
             case SessionState.Initial:
                 console.log('Session initial...')
@@ -252,7 +263,6 @@ class SipPhone extends EventTarget {
                 break
             case SessionState.Established:
                 console.log('Session established...')
-                console.log({ session })
                 this._setupRemoteMedia(session)
                 break
             case SessionState.Terminating:
@@ -268,27 +278,27 @@ class SipPhone extends EventTarget {
     }
     hangUp() {
         if (!this._session) {
-            console.log('ERROR')
+            console.log('HUNG_UP ERROR')
             return
         }
         switch (this._session.state) {
             case SessionState.Initial:
             case SessionState.Establishing:
                 if (this._session instanceof Inviter) {
-                    console.log('An unestablished outgoing session')
+                    console.log('HUNG_UP: An unestablished outgoing session')
                     this._session.cancel()
                 } else {
-                    console.log('An unestablished incoming session')
+                    console.log('HUNG_UP: An unestablished incoming session')
                     this._session.reject()
                 }
                 break
             case SessionState.Established:
-                console.log('An established session')
+                console.log('HUNG_UP: An established session')
                 this._session.bye()
                 break
             case SessionState.Terminating:
             case SessionState.Terminated:
-                console.log('Cannot terminate a session that is already terminated')
+                console.log('HUNG_UP: Cannot terminate a session that is already terminated')
                 break
         }
     }
@@ -327,4 +337,4 @@ class SipPhone extends EventTarget {
     }
 }
 
-export { SipPhone, ConnectionError, RegistrationError }
+export { SipPhone, ConnectionError, RegistrationError, RegistererState }

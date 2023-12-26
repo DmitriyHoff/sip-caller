@@ -16,6 +16,21 @@ export default defineConfig({
             }
         },
         plugins: [vue()],
-//        assetsInclude: ['**/*.woff2', '**/*.ttf']
-    }
+        build: {
+            rollupOptions: {
+                input: {
+                    index: resolve(__dirname, 'src/renderer/index.html'),
+                    call: resolve(__dirname, 'src/renderer/call.html'),
+                    login: resolve(__dirname, 'src/renderer/login.html')
+                }
+            }
+        }
+    },
+    extraFiles: [
+        {
+            from: '/',
+            to: '/',
+            filter: ['*.env']
+        }
+    ]
 })

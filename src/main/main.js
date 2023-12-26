@@ -2,21 +2,35 @@
 import { app, BrowserWindow, ipcMain, nativeTheme, systemPreferences } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { AppEvent } from './events'
+
 // окна
 import LoginWindow from './windowLogin'
 import MainWindow from './windowMain'
 import CallWindow from './windowCall'
 
-const windows = []
+let loggedIn = false
+
+const COLOR = {
+    RED: '\u001b[31m',
+    GREEN: '\u001b[32m',
+    CYAN: '\u001b[36m',
+    BLUE: '\u001b[34m',
+    RESET: '\u001b[0m'
+}
+
 const mainWindow = new MainWindow()
 const loginWindow = new LoginWindow()
 const callWindow = new CallWindow()
-windows.push(mainWindow, loginWindow, callWindow)
-let isLoggedIn = false
+
+// windows.push(mainWindow, loginWindow, callWindow)
 
 const showWindow = (win) => win.show()
 // mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
 // callWindow.events.on('ready-to-show', showWindow)
+mainWindow.events.on('ready-to-show', () => {
+    loginWindow.browserWindow.setParentWindow(mainWindow.browserWindow)
+    callWindow.browserWindow.setParentWindow(mainWindow.browserWindow)
+})
 loginWindow.events.on('ready-to-show', showWindow)
 
 app.whenReady().then(async () => {
@@ -34,7 +48,7 @@ app.whenReady().then(async () => {
     // инициализация всех окон
     mainWindow.init()
     loginWindow.init()
-    // callWindow.init()
+    callWindow.init()
 
     app.on(AppEvent.Activate, async function () {
         // On macOS it's common to re-create a window in the app when the
@@ -42,6 +56,13 @@ app.whenReady().then(async () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             loginWindow.init()
             mainWindow.init()
+            callWindow.init()
+            // mainWindow.events.on('ready-to-show', () => {
+            //     mainWindow.hide()
+            // })
+            // callWindow.events.on('ready-to-show', () => {
+            //     callWindow.hide()
+            // })
         }
     })
 
@@ -58,7 +79,8 @@ app.whenReady().then(async () => {
         console.log('electron: login-response', params)
 
         if (!params.error) {
-            loginWindow.browserWindow.close()
+            loggedIn = true
+            loginWindow.close(loggedIn)
             mainWindow.show()
         } else {
             loginWindow.browserWindow.webContents.send(AppEvent.LoginResponse, params)
@@ -70,12 +92,30 @@ app.whenReady().then(async () => {
     })
 
     ipcMain.on(AppEvent.SipInvite, async (event, params) => {
-        console.log('electron: sip-invite', params)
-        callWindow.init()
-        callWindow.events.on('ready-to-show', () => {
-            callWindow.browserWindow.webContents.send(AppEvent.SipInvite, params)
-            callWindow.show()
-        })
+        console.log('\u001b[34melectron: sip-invite', params)
+
+        callWindow.browserWindow.webContents.send(AppEvent.SipInvite, params)
+        callWindow.show()
+    })
+
+    ipcMain.on(AppEvent.SipSessionStateChanged, async (event, state) => {
+        try {
+            console.log(
+                `${COLOR.CYAN}electron: ${AppEvent.SipSessionStateChanged}${COLOR.RESET}`,
+                state
+            )
+            if (callWindow.browserWindow.webContents)
+                callWindow.browserWindow.webContents.send(AppEvent.SipSessionStateChanged, state)
+
+            if (state === 'Establishing') {
+                // callWindow.init()
+                callWindow.show()
+            } else if (state === 'Terminated') {
+                callWindow.hide()
+            }
+        } catch (error) {
+            console.log(COLOR.RED + error + COLOR.RESET)
+        }
     })
 
     ipcMain.on(AppEvent.PhoneAcceptClick, async (event, params) => {
@@ -89,7 +129,6 @@ app.whenReady().then(async () => {
     })
 
     ipcMain.on(AppEvent.SipConnect, () => {
-        isLoggedIn = true
         console.log('electron: sip-connect')
     })
 
@@ -97,20 +136,20 @@ app.whenReady().then(async () => {
         console.log('electron: sip-disconnect')
     })
 
-    ipcMain.on(AppEvent.SipBeginCall, () => {
-        console.log('electron: sip-begin-call')
-        //callWindow.browserWindow.webContents.send('sip-begin-call')
-        callWindow.init()
-        callWindow.show()
-        callWindow.browserWindow.webContents.send(AppEvent.SipBeginCall)
-    })
+    // ipcMain.on(AppEvent.SipBeginCall, () => {
+    //     console.log(COLOR.GREEN + 'electron: sip-begin-call' + COLOR.RESET)
+    //     //callWindow.browserWindow.webContents.send('sip-begin-call')
+    //     callWindow.init()
+    //     callWindow.show()
+    //     callWindow.browserWindow.webContents.send(AppEvent.SipBeginCall)
+    // })
 
-    ipcMain.on('sip-end-call', () => {
-        console.log('electron: sip-end-call')
-        if (!callWindow.browserWindow.isDestroyed()) {
-            callWindow.browserWindow.close()
-        }
-    })
+    // ipcMain.on('sip-end-call', () => {
+    //     console.log(COLOR.CYAN + 'electron: sip-end-call' + COLOR.RESET)
+    //     // if (!callWindow.browserWindow.isDestroyed()) {
+    //     //     callWindow.browserWindow.close()
+    //     // }
+    // })
 
     ipcMain.handle(AppEvent.ShouldUseDarkColors, () => {
         console.log('electron: should-use-dark-colors: ', nativeTheme.shouldUseDarkColors)

@@ -2,43 +2,39 @@ import { defineStore } from 'pinia'
 import { SipPhone } from '../services/sip-phone'
 import { ref } from 'vue'
 
-
-
 export const useSipStore = defineStore('phone', () => {
-    // const sipOptions = {
-    //     uri: 'sip:202@gippars.ru',
-    //     login: '202',
-    //     password: 'Hatr8Qhb!h122Qr',
-    //     server: 'wss://gippars.ru:4443/ws'
-    // }
-
     const responseCallback = ref(null)
 
-    function registererStateChangeListener(state) {
-        registererState.value = state
-        console.log({ state })
-    }
+    const registererState = ref('')
+    const sessionState = ref('')
 
-    function responseListener(response) {
-        if (responseCallback.value) responseCallback.value(response)
-        console.log('STORE: ', { response })
-    }
+    const callbacks = {
+        registererStateChangeListener: (state) => {
+            registererState.value = state
+            console.log({ state })
+            window.api.sendSipRegistererStateChanged(state)
+        },
 
+        sessionStateChangeListener: (state) => {
+            sessionState.value = state
+            console.log('sessionStateChangeListener: ', sessionState.value)
+            window.api.sendSipSessionStateChanged(state)
+        },
+
+        responseListener: (response) => {
+            if (responseCallback.value) responseCallback.value(response)
+            console.log('STORE: ', { response })
+        }
+    }
     // Моя звонилка
     const phone = ref(null)
 
     function init(options, delegate) {
-        phone.value = new SipPhone(
-            options,
-            delegate,
-            responseListener,
-            registererStateChangeListener
-        )
+        phone.value = new SipPhone(options, delegate, callbacks)
     }
 
     function call(number) {
         phone.value.call(`sip:${number}@gippars.ru`)
-        window.api.sendSipBeginCall()
     }
 
     function terminate() {
@@ -61,7 +57,6 @@ export const useSipStore = defineStore('phone', () => {
     function onResponse(callback) {
         responseCallback.value = callback
     }
-    const registererState = ref('')
 
     return {
         phone,
@@ -72,6 +67,7 @@ export const useSipStore = defineStore('phone', () => {
         terminate,
         answer,
         registererState,
+        sessionState,
         responseCallback
     }
 })

@@ -23,4 +23,21 @@ export default class LoginWindow extends Window {
         }
         super(browserWindowConstructorOptions)
     }
+    init() {
+        super.init()
+        this._browserWindow.on('close', (event) => {
+            // event.preventDefault()
+            const parent = this._browserWindow.getParentWindow()
+            this._browserWindow.setParentWindow(null)
+            if (parent) {
+                parent.close()
+            }
+        })
+    }
+    close(loggedIn) {
+        if (loggedIn) {
+            this._browserWindow.setParentWindow(null)
+        }
+        super.close()
+    }
 }

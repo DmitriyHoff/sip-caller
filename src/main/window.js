@@ -40,8 +40,14 @@ export default class Window {
             this._browserWindow.loadFile(join(__dirname, `../renderer/${this._htmlPath}`))
         }
 
-        this._browserWindow.on('closed', (event) => {
+        this._browserWindow.on('close', (event) => {
             console.log(this.constructor.name, 'closed')
+
+            // Закрыть все дочерние окна
+            const children = this._browserWindow.getChildWindows()
+            children.forEach((child) => {
+                child.close()
+            })
         })
     }
 

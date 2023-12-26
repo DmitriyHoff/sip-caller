@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import ring from '../assets/sounds/ring-default.mp3'
 import call from '../assets/sounds/call.mp3'
-
+import { SessionState } from 'sip.js'
 const callerName = ref('')
 const callerURI = ref('')
 const type = ref()
@@ -10,7 +10,7 @@ const isAccepted = ref(false)
 
 const callSound = new Audio(call)
 callSound.loop = true
-callSound.play()
+// callSound.play()
 
 // ответ на звонок
 function answerCall() {
@@ -32,6 +32,11 @@ function rejectCall() {
 //     callerURI.value = uri
 //     console.log({ params })
 // })
+window.api.onSipSessionStateChanged((state) => {
+    switch (state) {
+        case SessionState.Terminated: 
+    }
+})
 </script>
 
 <template>
