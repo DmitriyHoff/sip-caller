@@ -44,4 +44,8 @@ export class SipUser {
             position: this.position
         } = data)
     }
+
+    get fullName() {
+        return this.last_name + ' ' + this.first_name
+    }
 }

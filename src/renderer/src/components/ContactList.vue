@@ -6,6 +6,7 @@ import { useContactsStore } from '../stores/contactsStore'
 import { storeToRefs } from 'pinia'
 import { UserStatusGroup } from '../classes/UserStatusGroup'
 import { useToast } from 'primevue/usetoast'
+import { formatDate } from '../utils'
 import Tag from 'primevue/tag'
 
 const contactsStore = useContactsStore()
@@ -45,18 +46,7 @@ function time(statusId, dataTimeString) {
     return null
 }
 
-function formatDate(difference) {
-    // Arrange the difference of date in days, hours, minutes, and seconds format
-    let days = Math.floor(difference / (1000 * 60 * 60 * 24))
-    let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-    let seconds = Math.floor((difference % (1000 * 60)) / 1000)
-    let total = ''
-    if (days > 0) total += days + 'д '
-    if (hours > 0 && days > 0) total += hours + ':'
-    total += minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0')
-    return total
-}
+
 const getV = () => {
     const r = Object.assign({}, currentTime)
     console.log(r)
@@ -90,13 +80,10 @@ const getV = () => {
         <Column field="status_group_id" header="!"></Column>
         <Column field="avatar" header="">
             <template #body="{ data }">
-                <UserAvatar
-                    :name="data.last_name + ' ' + data.first_name"
-                    :status-id="data.status_id"
-                />
+                <UserAvatar :name="data.fullName" :status-id="data.status_id" />
             </template>
         </Column>
-        <Column column-key="time" header="" bodyStyle="text-align:right">
+        <Column column-key="time" header="" body-style="text-align:right">
             <template #body="{ data }">
                 <Tag
                     class="time text-gray-900"
@@ -112,9 +99,7 @@ const getV = () => {
         </Column>
         <Column field="name" header="Имя">
             <template #body="{ data }">
-                <span class="name m-0 text-color">{{
-                    data.last_name + ' ' + data.first_name
-                }}</span>
+                <span class="name m-0 text-color">{{ data.fullName }}</span>
                 <p class="text-xs text-color-secondary m-0 p-0 py-1">{{ data.position }}</p>
             </template>
         </Column>

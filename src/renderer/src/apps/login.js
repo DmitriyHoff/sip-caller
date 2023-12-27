@@ -2,7 +2,7 @@
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
 
-import Login from '../layouts/AppLogin.vue'
+import Login from '../apps-layout/AppLogin.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'

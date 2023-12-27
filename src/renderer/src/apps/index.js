@@ -19,7 +19,7 @@ import ProgressBar from 'primevue/progressbar'
 import Tag from 'primevue/tag'
 import ToastService from 'primevue/toastservice'
 import router from '../router'
-import App from '../layouts/AppMain.vue'
+import App from '../apps-layout/AppMain.vue'
 
 import '../assets/css/fonts.css'
 import '../assets/css/fonts-mono.css'

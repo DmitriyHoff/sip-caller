@@ -5,8 +5,8 @@ import axios from 'axios'
 
 setThemeDependency()
 
-const login = ref('d_hoff')
-const password = ref('QazWsx39')
+const login = ref(import.meta.env.RENDERER_VITE_DEFAULT_LOGIN)
+const password = ref(import.meta.env.RENDERER_VITE_DEFAULT_PASSWD)
 const checked = ref(null)
 
 const loading = ref(false)
@@ -15,7 +15,7 @@ const hasError = ref(false)
 
 async function userLogin() {
     /* Если авторизация отключена в .env */
-    if (window.api.FROG_AUTH_OFF) return 'token'
+    if (window.api.FROG_AUTH_OFF === 'true') return 'token'
 
     const response = await axios.post(`${window.api.SERVER_URL}/user/login`, {
         login: login.value,
@@ -27,7 +27,7 @@ async function userLogin() {
 
 async function getSipCredentials(token) {
     /* Если авторизация отключена в .env */
-    if (window.api.FROG_AUTH_OFF)
+    if (window.api.FROG_AUTH_OFF === 'true')
         return {
             login_name: 'Гофф Дмитрий',
             login_id: 1572

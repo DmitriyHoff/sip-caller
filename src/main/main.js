@@ -27,6 +27,7 @@ const callWindow = new CallWindow()
 const showWindow = (win) => win.show()
 // mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
 // callWindow.events.on('ready-to-show', showWindow)
+
 mainWindow.events.on('ready-to-show', () => {
     loginWindow.browserWindow.setParentWindow(mainWindow.browserWindow)
     callWindow.browserWindow.setParentWindow(mainWindow.browserWindow)
@@ -57,12 +58,6 @@ app.whenReady().then(async () => {
             loginWindow.init()
             mainWindow.init()
             callWindow.init()
-            // mainWindow.events.on('ready-to-show', () => {
-            //     mainWindow.hide()
-            // })
-            // callWindow.events.on('ready-to-show', () => {
-            //     callWindow.hide()
-            // })
         }
     })
 
@@ -70,7 +65,6 @@ app.whenReady().then(async () => {
     ipcMain.on(AppEvent.LoginRequest, async (event, params) => {
         console.log('electron: login-request')
         console.log({ params })
-        // mainWindow.show()
         mainWindow.browserWindow.webContents.send(AppEvent.LoginRequest, params)
     })
 

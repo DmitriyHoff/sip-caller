@@ -4,16 +4,17 @@ import { UserStatusGroup } from '../classes/UserStatusGroup'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { stringToColor, stringToInitials, getColorRelativeLuminance } from '../utils'
 
-const props = defineProps({ name: String, statusId: Number })
+const props = defineProps({ name: String, statusId: [Number, String], size: String })
 
 const bgColor = () => stringToColor(props.name)
 const luminance = () => getColorRelativeLuminance(bgColor())
 const initials = () => stringToInitials(props.name)
 const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
+
 </script>
 
 <template>
-    <Avatar class="mr-2" :style="{ 'background-color': bgColor(), color: textColor() }">
+    <Avatar :size="props.size || 'normal'" :style="{ 'background-color': bgColor(), color: textColor() }">
         <template #default>
             <div
                 style="width: 100%; height: 100%; position: relative"
@@ -24,6 +25,7 @@ const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
                 </p>
 
                 <svg-icon
+                    v-if="props.statusId != 'none'"
                     class="pi pi-circle-fill border-circle text-xs custom-badge text-gray-800 pad-1"
                     type="mdi"
                     :path="UserStatusGroup.getStatusIcon(props.statusId)"

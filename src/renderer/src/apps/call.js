@@ -1,7 +1,7 @@
 /* eslint-disable vue/no-reserved-component-names */
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import IncomingCall from '../layouts/AppCall.vue'
+import IncomingCall from '../apps-layout/AppCall.vue'
 
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'

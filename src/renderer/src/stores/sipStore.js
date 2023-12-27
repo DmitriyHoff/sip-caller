@@ -7,27 +7,25 @@ export const useSipStore = defineStore('phone', () => {
 
     const registererState = ref('')
     const sessionState = ref('')
+    const phone = ref(null)
 
     const callbacks = {
         registererStateChangeListener: (state) => {
             registererState.value = state
-            console.log({ state })
             window.api.sendSipRegistererStateChanged(state)
         },
 
         sessionStateChangeListener: (state) => {
             sessionState.value = state
-            console.log('sessionStateChangeListener: ', sessionState.value)
             window.api.sendSipSessionStateChanged(state)
         },
 
         responseListener: (response) => {
             if (responseCallback.value) responseCallback.value(response)
-            console.log('STORE: ', { response })
         }
     }
-    // Моя звонилка
-    const phone = ref(null)
+
+    
 
     function init(options, delegate) {
         phone.value = new SipPhone(options, delegate, callbacks)
@@ -39,7 +37,6 @@ export const useSipStore = defineStore('phone', () => {
 
     function terminate() {
         phone.value.hangUp()
-        // window.api.sendSipEndCall()
     }
 
     function answer() {
@@ -54,9 +51,9 @@ export const useSipStore = defineStore('phone', () => {
         return phone.value.register()
     }
 
-    function onResponse(callback) {
-        responseCallback.value = callback
-    }
+    // function onResponse(callback) {
+    //     responseCallback.value = callback
+    // }
 
     return {
         phone,

@@ -84,11 +84,30 @@ function getColorRelativeLuminance(colorHash) {
     const relativeLuminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue
     return relativeLuminance
 }
+
+/**
+ * Формирует временной интервал на основе разницы двух дат
+ * @param {Number} difference
+ * @returns Строка вида 00:00:00
+ */
+function formatDate(difference) {
+    // Arrange the difference of date in days, hours, minutes, and seconds format
+    let days = Math.floor(difference / (1000 * 60 * 60 * 24))
+    let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+    let seconds = Math.floor((difference % (1000 * 60)) / 1000)
+    let total = ''
+    if (days > 0) total += days + 'д '
+    if (hours > 0 && days > 0) total += hours + ':'
+    total += minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0')
+    return total
+}
 export {
     timeout,
     setDarkTheme,
     setThemeDependency,
     stringToColor,
     stringToInitials,
-    getColorRelativeLuminance
+    getColorRelativeLuminance,
+    formatDate
 }

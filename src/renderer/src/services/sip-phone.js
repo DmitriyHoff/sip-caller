@@ -121,17 +121,16 @@ class SipPhone extends EventTarget {
             logBuiltinEnabled: window.api.SIP_LOGGER === 'true', // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
-                iceGatheringTimeout: 3000,
+                iceGatheringTimeout: 1000,
                 peerConnectionConfiguration: {
                     iceServers: [
-                        {
-                            urls: [window.api.STUN_SERVER_URL],
-                            username: '',
-                            credential: ''
-                        }
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: [window.api.STUN_SERVER_URL] }
                     ],
+                    bundlePolicy: 'max-compat',
                     iceTransportPolicy: 'all',
-                    rtcpMuxPolicy: 'require'
+                    iceCandidatePoolSize: 10,
+                    certificates: []
                 }
             }
         }
