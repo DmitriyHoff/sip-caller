@@ -15,17 +15,26 @@ export const useSipStore = defineStore('phone', () => {
             window.api.sendSipRegistererStateChanged(state)
         },
 
-        sessionStateChangeListener: (state) => {
+        sessionStateChangeListener: (session, state) => {
+            console.log({ session, state })
+            const direction = session.constructor.name === 'Inviter' ? 'out' : 'in'
+            const userName = session.remoteIdentity.displayName
+            const userId = session.remoteIdentity.uri.user
             sessionState.value = state
-            window.api.sendSipSessionStateChanged(state)
+
+            const params = {
+                direction,
+                userName,
+                userId,
+                state
+            }
+            window.api.sendSipSessionStateChanged(params)
         },
 
         responseListener: (response) => {
             if (responseCallback.value) responseCallback.value(response)
         }
     }
-
-    
 
     function init(options, delegate) {
         phone.value = new SipPhone(options, delegate, callbacks)

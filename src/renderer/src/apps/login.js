@@ -10,7 +10,6 @@ import ProgressSpinner from 'primevue/progressspinner'
 
 import '../assets/css/normalize.css'
 import 'primeflex/primeflex.scss'
-import 'primeicons/primeicons.css'
 
 const app = createApp(Login)
 app.use(PrimeVue)

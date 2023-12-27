@@ -124,7 +124,7 @@ class SipPhone extends EventTarget {
                 iceGatheringTimeout: 1000,
                 peerConnectionConfiguration: {
                     iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
+                        // { urls: 'stun:stun.l.google.com:19302' },
                         { urls: [window.api.STUN_SERVER_URL] }
                     ],
                     bundlePolicy: 'max-compat',
@@ -214,7 +214,7 @@ class SipPhone extends EventTarget {
                     }
                 }
             }
-            console.log(registererRegisterOptions)
+
             await this._registerer.register(registererRegisterOptions)
         } catch (err) {
             throw new RegistrationError(err)
@@ -251,7 +251,7 @@ class SipPhone extends EventTarget {
 
     onSessionStateCange(session, state) {
         console.log(`Session state changed to ${state}`)
-        this._callbacks.sessionStateChangeListener(state)
+        this._callbacks.sessionStateChangeListener(session, state)
 
         switch (state) {
             case SessionState.Initial:

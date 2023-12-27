@@ -19,7 +19,6 @@ export const useContactsStore = defineStore('contacts', () => {
             contacts.value = aList
 
             messagesStore.onIncomingMessage = () => {
-                // console.log('-- onIncomingMessage --')
                 updateList()
             }
             while (!messages.value.isEmpty) {

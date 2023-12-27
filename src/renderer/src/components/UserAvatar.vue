@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { UserStatusGroup } from '../classes/UserStatusGroup'
 import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiArrowUpBold, mdiArrowDownBold } from '@mdi/js'
 import { stringToColor, stringToInitials, getColorRelativeLuminance } from '../utils'
 
 const props = defineProps({ name: String, statusId: [Number, String], size: String })
@@ -10,11 +11,13 @@ const bgColor = () => stringToColor(props.name)
 const luminance = () => getColorRelativeLuminance(bgColor())
 const initials = () => stringToInitials(props.name)
 const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
-
 </script>
 
 <template>
-    <Avatar :size="props.size || 'normal'" :style="{ 'background-color': bgColor(), color: textColor() }">
+    <Avatar
+        :size="props.size || 'normal'"
+        :style="{ 'background-color': bgColor(), color: textColor() }"
+    >
         <template #default>
             <div
                 style="width: 100%; height: 100%; position: relative"
@@ -37,11 +40,27 @@ const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
                         'bg-gray-400': UserStatusGroup.isOffline(props.statusId)
                     }"
                 ></svg-icon>
+                <svg-icon
+                    v-if="props.statusId === -3 || props.statusId === -4"
+                    class="arrow"
+                    type="mdi"
+                    :path="props.statusId === -3 ? mdiArrowDownBold : mdiArrowUpBold"
+                    :size="10"
+                ></svg-icon>
             </div>
         </template>
     </Avatar>
 </template>
 <style scoped>
+.arrow {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(-90%, 60%);
+    background-color: #FFF;
+    border-radius: 50%;
+    color: #333;
+}
 .custom-badge {
     position: absolute;
     right: 0;

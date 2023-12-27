@@ -85,6 +85,7 @@ app.whenReady().then(async () => {
         }
     })
 
+    /* Входящий звонок */
     ipcMain.on(AppEvent.SipInvite, async (event, params) => {
         console.log('\u001b[34melectron: sip-invite', params)
 
@@ -92,14 +93,17 @@ app.whenReady().then(async () => {
         callWindow.show()
     })
 
-    ipcMain.on(AppEvent.SipSessionStateChanged, async (event, state) => {
+    /* Изменение состояния текущей сессии */
+    ipcMain.on(AppEvent.SipSessionStateChanged, async (event, params) => {
+        const { direction, userName, userId, state } = params
         try {
             console.log(
                 `${COLOR.CYAN}electron: ${AppEvent.SipSessionStateChanged}${COLOR.RESET}`,
                 state
             )
+            console.log({ params })
             if (callWindow.browserWindow.webContents)
-                callWindow.browserWindow.webContents.send(AppEvent.SipSessionStateChanged, state)
+                callWindow.browserWindow.webContents.send(AppEvent.SipSessionStateChanged, params)
 
             if (state === 'Establishing') {
                 // callWindow.init()

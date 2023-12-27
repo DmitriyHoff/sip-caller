@@ -5,7 +5,8 @@ import call from '../assets/sounds/call.mp3'
 import { SessionState } from 'sip.js'
 import UserAvatar from '../components/UserAvatar.vue'
 import { formatDate } from '../utils'
-
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiPhone, mdiPhoneHangup } from '@mdi/js'
 const callerName = ref('')
 const callerURI = ref('')
 const beginAt = ref(null)
@@ -38,18 +39,28 @@ function startTimer() {
         duration.value = formatDate(new Date() - beginAt.value)
     })
 }
+
 window.api.onSipInvite((params) => {
     const { from, uri } = params
     incoming.value = true
+    isAccepted.value = false
 
     callerName.value = from
     callerURI.value = uri
+
     beginAt.value = null
     duration.value = null
+
     sound.src = ring
     sound.play()
 })
-window.api.onSipSessionStateChanged((state) => {
+
+window.api.onSipSessionStateChanged((params) => {
+    const { direction, userName, userId, state } = params
+    callerName.value = userName
+    callerURI.value = userId
+
+    console.log({ params })
     switch (state) {
         case SessionState.Establishing:
             sound.src = call
@@ -93,10 +104,10 @@ window.api.onSipSessionStateChanged((state) => {
                     :class="{ invisible: isAccepted }"
                     @click="answerCall"
                 >
-                    <i class="pi pi-phone"></i>
+                    <svg-icon type="mdi" :path="mdiPhone" :size="24"></svg-icon>
                 </Button>
                 <Button severity="danger" rounded aria-label="Cancel" @click="rejectCall">
-                    <i class="pi pi-phone" style="transform: rotate(134deg)"></i>
+                    <svg-icon type="mdi" :path="mdiPhoneHangup" :size="24"></svg-icon>
                 </Button>
             </div>
         </div>

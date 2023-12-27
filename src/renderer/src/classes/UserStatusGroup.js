@@ -64,7 +64,8 @@ class UserStatusGroup {
             case 0:
             case null:
                 return mdiHeadsetOff
-            default: return 'undefined'
+            default:
+                return 'undefined'
         }
     }
 }

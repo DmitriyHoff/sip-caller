@@ -26,7 +26,6 @@ import '../assets/css/fonts-mono.css'
 
 import '../assets/css/normalize.css'
 import 'primeflex/primeflex.scss'
-import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 const pinia = createPinia()
