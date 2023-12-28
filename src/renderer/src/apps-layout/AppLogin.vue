@@ -15,10 +15,10 @@ const hasError = ref(false);
 
 async function userLogin() {
   /* Если авторизация отключена в .env */
-  if (window.api.FROG_AUTH_OFF === "true") return "token";
+  if (import.meta.env.RENDERER_VITE_FROG_AUTH_OFF === "true") return "token";
 
   const response = await axios.post(
-    `${window.api.SERVER_URL}/user/login`,
+    `${import.meta.env.RENDERER_VITE_SERVER_URL}/user/login`,
     {
       login: login.value,
       password: password.value,
@@ -33,7 +33,7 @@ async function userLogin() {
 
 async function getSipCredentials(token) {
   /* Если авторизация отключена в .env */
-  if (window.api.FROG_AUTH_OFF === "true")
+  if (import.meta.env.RENDERER_VITE_FROG_AUTH_OFF === "true")
     return {
       login_name: "Гофф Дмитрий",
       login_id: 1572,
@@ -41,7 +41,7 @@ async function getSipCredentials(token) {
 
   console.log("timeout: ", import.meta.env.RENDERER_VITE_REQUEST_TIMEOUT);
   const response = await axios.post(
-    `${window.api.SERVER_URL}/user/sipCredentials`,
+    `${import.meta.env.RENDERER_VITE_SERVER_URL}/user/sipCredentials`,
     {
       login: login.value,
       password: password.value,

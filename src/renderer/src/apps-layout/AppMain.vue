@@ -102,7 +102,7 @@ window.api.onLoginRequest(async (data) => {
         console.log('registered...')
         await contactsStore.load()
 
-        if (!window.api.FROG_AUTH_OFF) {
+        if (!(import.meta.env.RENDERER_VITE_FROG_AUTH_OFF === 'true')) {
             // Загрузка контактов
             await contactsStore.load()
 

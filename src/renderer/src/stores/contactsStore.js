@@ -13,7 +13,9 @@ export const useContactsStore = defineStore('contacts', () => {
 
     async function load() {
         try {
-            const response = await axios.get(`${window.api.SERVER_URL}/references/sipUsers`)
+            const response = await axios.get(
+                `${import.meta.env.RENDERER_VITE_SERVER_URL}/references/sipUsers`
+            )
             const list = response.data
             const aList = list.map((item) => new UserContact(item))
             contacts.value = aList
@@ -33,7 +35,7 @@ export const useContactsStore = defineStore('contacts', () => {
         if (!messages.value.isEmpty) {
             const data = messages.value.pull()
             const contact = contacts.value.find((item) => item.id_user === data.id_user)
-            //console.log('contactsStore: ', data)
+            console.log('contactsStore: ', data)
             if (contact) {
                 contact.update(data)
             }

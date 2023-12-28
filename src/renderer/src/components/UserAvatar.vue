@@ -44,7 +44,7 @@ const textColor = () => (luminance() > 0xaa ? '#333' : '#fff')
                     v-if="props.statusId === -3 || props.statusId === -4"
                     class="arrow"
                     type="mdi"
-                    :path="props.statusId === -3 ? mdiArrowDownBold : mdiArrowUpBold"
+                    :path="props.statusId === -4 ? mdiArrowDownBold : mdiArrowUpBold"
                     :size="10"
                 ></svg-icon>
             </div>

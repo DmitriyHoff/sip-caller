@@ -117,15 +117,15 @@ class SipPhone extends EventTarget {
             transportOptions: { server },
             uri: this._uri,
             delegate: this._delegate,
-            userAgentString: window.api.USER_AGENT,
-            logBuiltinEnabled: window.api.SIP_LOGGER === 'true', // отключаю логирование
+            userAgentString: import.meta.env.RENDERER_VITE_USER_AGENT,
+            logBuiltinEnabled: import.meta.env.RENDERER_VITE_SIP_LOGGER === 'true', // отключаю логирование
             logConfiguration: false,
             sessionDescriptionHandlerFactoryOptions: {
                 iceGatheringTimeout: 1000,
                 peerConnectionConfiguration: {
                     iceServers: [
                         // { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: [window.api.STUN_SERVER_URL] }
+                        { urls: [import.meta.env.RENDERER_VITE_STUN_SERVER_URL] }
                     ],
                     bundlePolicy: 'max-compat',
                     iceTransportPolicy: 'all',

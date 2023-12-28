@@ -25,7 +25,7 @@ const callWindow = new CallWindow()
 // windows.push(mainWindow, loginWindow, callWindow)
 
 const showWindow = (win) => win.show()
- mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
+ // mainWindow.events.on('ready-to-show', showWindow) // <-- отобразить главное окно для отладки
  // callWindow.events.on('ready-to-show', showWindow)
 
 mainWindow.events.on('ready-to-show', () => {

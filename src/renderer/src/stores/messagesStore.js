@@ -10,7 +10,8 @@ export const useMessagesStore = defineStore('messages', () => {
     const onIncomingMessage = ref(null)
 
     function connectSocket() {
-        socket.value = new WebSocket(window.api.WEB_SOCKET_SERVER)
+        // console.log("WS connected!")
+        socket.value = new WebSocket(import.meta.env.RENDERER_VITE_WEB_SOCKET_SERVER)
         socket.value.onmessage = async (msg) => {
             try {
                 const parseJSON = JSON.parse(msg.data)
@@ -25,7 +26,6 @@ export const useMessagesStore = defineStore('messages', () => {
                         switch (type.module) {
                             case 'main_info':
                                 messages.value.push(new SocketMessage(dataJSON))
-
                                 if (typeof onIncomingMessage.value === 'function')
                                     onIncomingMessage.value()
                                 break
