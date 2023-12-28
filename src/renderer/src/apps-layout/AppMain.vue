@@ -87,10 +87,10 @@ window.api.onLoginRequest(async (data) => {
 
     const sipNumber = credentials.login_id === 1572 ? 200 : 202 // тестовые номера
     const sipOptions = {
-        uri: `sip:${sipNumber}@gippars.ru`,
+        uri: `sip:${sipNumber}@${import.meta.env.RENDERER_VITE_ATS_HOST}`,
         login: sipNumber,
         password: 'Hatr8Qhb!h122Qr',
-        server: 'wss://gippars.ru:4443/ws'
+        server: import.meta.env.RENDERER_VITE_ATS_WS_SERVER
     }
     sipStore.init(sipOptions, delegate)
     await timeout(500)

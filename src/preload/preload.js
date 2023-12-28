@@ -104,12 +104,12 @@ const api = {
     onNativeThemeUpdated: async (callback) => {
         ipcRenderer.on(AppEvent.NativeThemeChanged, (_event, value) => callback(value))
     },
-    SERVER_URL: import.meta.env.PRELOAD_VITE_SERVER_URL,
-    WEB_SOCKET_SERVER: import.meta.env.PRELOAD_VITE_WEB_SOCKET_SERVER,
-    FROG_AUTH_OFF: import.meta.env.PRELOAD_VITE_FROG_AUTH_OFF,
-    STUN_SERVER_URL: import.meta.env.PRELOAD_VITE_STUN_SERVER_URL,
-    USER_AGENT: import.meta.env.PRELOAD_VITE_USER_AGENT,
-    SIP_LOGGER: import.meta.env.PRELOAD_VITE_SIP_LOGGER
+    // SERVER_URL: import.meta.env.PRELOAD_VITE_SERVER_URL,
+    // WEB_SOCKET_SERVER: import.meta.env.PRELOAD_VITE_WEB_SOCKET_SERVER,
+    // FROG_AUTH_OFF: import.meta.env.PRELOAD_VITE_FROG_AUTH_OFF,
+    // STUN_SERVER_URL: import.meta.env.PRELOAD_VITE_STUN_SERVER_URL,
+    // USER_AGENT: import.meta.env.PRELOAD_VITE_USER_AGENT,
+    // SIP_LOGGER: import.meta.env.PRELOAD_VITE_SIP_LOGGER
 }
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

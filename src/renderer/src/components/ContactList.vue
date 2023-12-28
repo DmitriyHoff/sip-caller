@@ -1,17 +1,16 @@
 <script setup>
 import UserAvatar from './UserAvatar.vue'
-import Toast from 'primevue/toast'
+
 import { ref } from 'vue'
 import { useContactsStore } from '../stores/contactsStore'
 import { storeToRefs } from 'pinia'
 import { UserStatusGroup } from '../classes/UserStatusGroup'
 import { useToast } from 'primevue/usetoast'
 import { formatDate } from '../utils'
-import Tag from 'primevue/tag'
 
 const contactsStore = useContactsStore()
 const { contacts } = storeToRefs(contactsStore)
-
+const expandedRowGroups = ref([1, 2, 3])
 // Запускаем таймер
 const currentTime = ref(null)
 setInterval(() => {
@@ -46,7 +45,6 @@ function time(statusId, dataTimeString) {
     return null
 }
 
-
 const getV = () => {
     const r = Object.assign({}, currentTime)
     console.log(r)
@@ -60,7 +58,9 @@ const getV = () => {
     </Toast>
     <DataTable
         v-model:selection="selectedUser"
+        v-model:expandedRowGroups="expandedRowGroups"
         :value="contacts"
+        expandable-row-groups
         selection-mode="single"
         data-key="id_user"
         class="p-datatable-sm text-sm w-full overflow-y-auto no-header"
@@ -78,11 +78,13 @@ const getV = () => {
         "
     >
         <Column field="status_group_id" header="!"></Column>
+
         <Column field="avatar" header="">
             <template #body="{ data }">
                 <UserAvatar :name="data.fullName" :status-id="data.status_id" />
             </template>
         </Column>
+
         <Column column-key="time" header="" body-style="text-align:right">
             <template #body="{ data }">
                 <Tag
@@ -97,22 +99,31 @@ const getV = () => {
                 >
             </template>
         </Column>
+
         <Column field="name" header="Имя">
             <template #body="{ data }">
                 <span class="name m-0 text-color">{{ data.fullName }}</span>
                 <p class="text-xs text-color-secondary m-0 p-0 py-1">{{ data.position }}</p>
             </template>
         </Column>
+
         <Column field="phone" header="Номер">
             <template #body="{ data }">
                 <span class="phone">{{ data.phone_number }}</span>
             </template>
         </Column>
-        <!-- <Column field="position" header="Должность"></Column> -->
+
+        <template #groupfooter="slotProps">
+            <div class="flex justify-content-end font-bold w-full">Total Customers: ...</div>
+        </template>
+
+        <template #header=slotProps>
+            <div class="bg-orange-400"></div>
+        </template>
         <template #groupheader="slotProps">
-            <div class="flex align-items-center gap-2 w-full">
-                <span>{{ UserStatusGroup.getStatusCaption(slotProps.data.status_id) }}</span>
-            </div>
+            <span class="vertical-align-middle ml-2 font-bold bg-orange-400">{{
+                UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id)
+            }}</span>
         </template>
     </DataTable>
 </template>

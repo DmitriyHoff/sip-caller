@@ -26,6 +26,7 @@ export const useContactsStore = defineStore('contacts', () => {
             while (!messages.value.isEmpty) {
                 updateList()
             }
+            console.log(contacts.value)
         } catch (error) {
             console.log(error)
         }

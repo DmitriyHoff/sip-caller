@@ -35,6 +35,7 @@ function call() {
             <div class="flex align-items-center justify-content-between gap-3">
                 <span class="flex-grow-1 p-float-label">
                     <InputText
+                    v-tooltip="'UserStatusGroup.getStatusDescription(props.statusId)'"
                         id="refidNumber"
                         v-model="refidNumber"
                         type="text"
@@ -44,6 +45,7 @@ function call() {
                     <label for="refidNumber">Номер дела</label>
                 </span>
                 <Button
+                    v-tooltip="'UserStatusGroup.getStatusDescription(props.statusId)'"
                     label="Найти"
                     class="font-normal"
                     size="small"

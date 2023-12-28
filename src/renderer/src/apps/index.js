@@ -18,6 +18,8 @@ import ScrollPanel from 'primevue/scrollpanel'
 import ProgressBar from 'primevue/progressbar'
 import Tag from 'primevue/tag'
 import ToastService from 'primevue/toastservice'
+import Toast from 'primevue/toast'
+import Tooltip from 'primevue/tooltip'
 import router from '../router'
 import App from '../apps-layout/AppMain.vue'
 
@@ -35,6 +37,8 @@ app.use(pinia)
 app.use(router)
 app.use(ToastService)
 
+app.directive('tooltip', Tooltip)
+
 app.component('Avatar', Avatar)
 app.component('Button', Button)
 app.component('Checkbox', Checkbox)
@@ -46,9 +50,8 @@ app.component('ScrollPanel', ScrollPanel)
 app.component('SplitButton', SplitButton)
 app.component('Splitter', Splitter)
 app.component('SplitterPanel', SplitterPanel)
-// app.component('Tag', Tag)
+app.component('Tag', Tag)
 app.component('Textarea', Textarea)
-
-
+app.component('Toast', Toast)
 
 app.mount('#app')
