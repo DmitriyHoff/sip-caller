@@ -7,10 +7,21 @@ import { storeToRefs } from 'pinia'
 import { UserStatusGroup } from '../classes/UserStatusGroup'
 import { useToast } from 'primevue/usetoast'
 import { formatDate } from '../utils'
+import { FilterMatchMode, FilterOperator } from 'primevue/api'
 
 const contactsStore = useContactsStore()
 const { contacts } = storeToRefs(contactsStore)
+
+/** Развёрнутые группы в таблице */
 const expandedRowGroups = ref([1, 2, 3])
+
+/** Фильтры */
+const filters = ref({
+    global: {
+        value: null,
+        matchMode: FilterMatchMode.STARTS_WITH
+    }
+})
 // Запускаем таймер
 const currentTime = ref(null)
 setInterval(() => {
@@ -59,6 +70,8 @@ const getV = () => {
     <DataTable
         v-model:selection="selectedUser"
         v-model:expandedRowGroups="expandedRowGroups"
+        v-model:filters="filters"
+        :global-filter-fields="['last_name', 'first_name']"
         :value="contacts"
         expandable-row-groups
         selection-mode="single"
@@ -75,6 +88,33 @@ const getV = () => {
             }
         "
     >
+        <template #header>
+            <div class="flex flex-wrap w-full align-items-center justify-content-between gap-2">
+                <div class="flex text-sm text-900">Поиск:</div>
+                <div class="flex flex-grow-1 p-0">
+                    <InputText
+                        v-model="filters['global'].value"
+                        placeholder="Найти..."
+                        type="text"
+                        size="small"
+                        class="w-full"
+                    />
+                </div>
+            </div>
+        </template>
+        <template #groupheader="slotProps">
+            <div
+                class="rowgroup-header-title"
+                :class="{
+                    'bg-green-500': UserStatusGroup.isOnline(slotProps.data.status_id),
+                    'bg-orange-400': UserStatusGroup.isWork(slotProps.data.status_id),
+                    'bg-yellow-400': UserStatusGroup.isLanchBreak(slotProps.data.status_id),
+                    'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
+                }"
+            >
+                <span>{{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}</span>
+            </div>
+        </template>
         <Column field="status_group_id" header="!"></Column>
 
         <Column field="avatar" header="">
@@ -110,22 +150,6 @@ const getV = () => {
                 <span class="phone">{{ data.phone_number }}</span>
             </template>
         </Column>
-
-        <template #header="slotProps">
-            <div class="bg-orange-400"></div>
-        </template>
-        <template #groupheader="slotProps">
-            <div class="rowgroup-header-title"
-            :class="{
-                    'bg-green-500': UserStatusGroup.isOnline(slotProps.data.status_id),
-                    'bg-orange-400': UserStatusGroup.isWork(slotProps.data.status_id),
-                    'bg-yellow-400': UserStatusGroup.isLanchBreak(slotProps.data.status_id),
-                    'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
-                }"
-            >
-                <span>{{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}</span>
-            </div>
-        </template>
     </DataTable>
 </template>
 
@@ -133,8 +157,8 @@ const getV = () => {
 .p-datatable-thead {
     display: none !important;
 }
-.color-marker {
-    display: none;
+.p-row-toggler {
+    border-radius: 6px;
 }
 .rowgroup-header-title {
     display: inline-flex;
