@@ -67,28 +67,8 @@ const getV = () => {
     <Toast position="bottom-right">
         <template #message="slotProps"> {{ 'ffs' + getV()._value }}</template>
     </Toast>
-    <DataTable
-        v-model:selection="selectedUser"
-        v-model:expandedRowGroups="expandedRowGroups"
-        v-model:filters="filters"
-        :global-filter-fields="['last_name', 'first_name']"
-        :value="contacts"
-        expandable-row-groups
-        selection-mode="single"
-        data-key="id_user"
-        class="p-datatable-sm text-sm w-full overflow-y-auto no-header"
-        row-group-mode="subheader"
-        group-rows-by="status_group_id"
-        sort-mode="multiple"
-        :multi-sort-meta="multiSort"
-        @row-click="
-            (e) => {
-                console.log('click!')
-                show()
-            }
-        "
-    >
-        <template #header>
+    <div class="flex flex-column w-full h-full align-items-stretch p-0">
+        <div class="p-1">
             <div class="flex flex-wrap w-full align-items-center justify-content-between gap-2">
                 <div class="flex text-sm text-900">Поиск:</div>
                 <div class="flex flex-grow-1 p-0">
@@ -101,59 +81,95 @@ const getV = () => {
                     />
                 </div>
             </div>
-        </template>
-        <template #groupheader="slotProps">
-            <div
-                class="rowgroup-header-title"
-                :class="{
-                    'bg-green-500': UserStatusGroup.isOnline(slotProps.data.status_id),
-                    'bg-orange-400': UserStatusGroup.isWork(slotProps.data.status_id),
-                    'bg-yellow-400': UserStatusGroup.isLanchBreak(slotProps.data.status_id),
-                    'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
-                }"
-            >
-                <span>{{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}</span>
-            </div>
-        </template>
-        <Column field="status_group_id" header="!"></Column>
-
-        <Column field="avatar" header="">
-            <template #body="{ data }">
-                <UserAvatar :name="data.fullName" :status-id="data.status_id" />
-            </template>
-        </Column>
-
-        <Column column-key="time" header="" body-style="text-align:right">
-            <template #body="{ data }">
-                <Tag
-                    class="time text-gray-900"
-                    :class="{
-                        'bg-green-500': UserStatusGroup.isOnline(data.status_id),
-                        'bg-orange-400': UserStatusGroup.isWork(data.status_id),
-                        'bg-yellow-400': UserStatusGroup.isLanchBreak(data.status_id),
-                        'bg-gray-400': UserStatusGroup.isOffline(data.status_id)
-                    }"
-                    >{{ time(data.status_id, data.status_dttmcr) }}</Tag
+        </div>
+        <div style="height: 0; flex: 1 1 auto">
+            <ScrollPanel class="w-full h-full">
+                <DataTable
+                    v-model:selection="selectedUser"
+                    v-model:expandedRowGroups="expandedRowGroups"
+                    v-model:filters="filters"
+                    :global-filter-fields="['last_name', 'first_name']"
+                    :value="contacts"
+                    expandable-row-groups
+                    selection-mode="single"
+                    data-key="id_user"
+                    class="p-datatable-sm text-sm w-full overflow-y-auto no-header p-1"
+                    row-group-mode="subheader"
+                    group-rows-by="status_group_id"
+                    sort-mode="multiple"
+                    :multi-sort-meta="multiSort"
+                    @row-click="
+                        (e) => {
+                            console.log('click!')
+                            show()
+                        }
+                    "
                 >
-            </template>
-        </Column>
+                    <template #empty> Не найдено совпадений... </template>
+                    <template #groupheader="slotProps">
+                        <div
+                            class="rowgroup-header-title"
+                            :class="{
+                                'bg-green-500': UserStatusGroup.isOnline(slotProps.data.status_id),
+                                'bg-orange-400': UserStatusGroup.isWork(slotProps.data.status_id),
+                                'bg-yellow-400': UserStatusGroup.isLanchBreak(
+                                    slotProps.data.status_id
+                                ),
+                                'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
+                            }"
+                        >
+                            <span>{{
+                                UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id)
+                            }}</span>
+                        </div>
+                    </template>
+                    <Column field="status_group_id" header="!"></Column>
 
-        <Column field="name" header="Имя">
-            <template #body="{ data }">
-                <span class="name m-0 text-color">{{ data.fullName }}</span>
-                <p class="text-xs text-color-secondary m-0 p-0 py-1">{{ data.position }}</p>
-            </template>
-        </Column>
+                    <Column field="avatar" header="">
+                        <template #body="{ data }">
+                            <UserAvatar :name="data.fullName" :status-id="data.status_id" />
+                        </template>
+                    </Column>
 
-        <Column field="phone" header="Номер">
-            <template #body="{ data }">
-                <span class="phone">{{ data.phone_number }}</span>
-            </template>
-        </Column>
-    </DataTable>
+                    <Column column-key="time" header="" body-style="text-align:right">
+                        <template #body="{ data }">
+                            <Tag
+                                class="time text-gray-900"
+                                :class="{
+                                    'bg-green-500': UserStatusGroup.isOnline(data.status_id),
+                                    'bg-orange-400': UserStatusGroup.isWork(data.status_id),
+                                    'bg-yellow-400': UserStatusGroup.isLanchBreak(data.status_id),
+                                    'bg-gray-400': UserStatusGroup.isOffline(data.status_id)
+                                }"
+                                >{{ time(data.status_id, data.status_dttmcr) }}</Tag
+                            >
+                        </template>
+                    </Column>
+
+                    <Column field="name" header="Имя">
+                        <template #body="{ data }">
+                            <span class="name m-0 text-color">{{ data.fullName }}</span>
+                            <p class="text-xs text-color-secondary m-0 p-0 py-1">
+                                {{ data.position }}
+                            </p>
+                        </template>
+                    </Column>
+
+                    <Column field="phone" header="Номер">
+                        <template #body="{ data }">
+                            <span class="phone">{{ data.phone_number }}</span>
+                        </template>
+                    </Column>
+                </DataTable>
+            </ScrollPanel>
+        </div>
+    </div>
 </template>
 
 <style>
+.p-datatable {
+    position: relative;
+}
 .p-datatable-thead {
     display: none !important;
 }
