@@ -12,6 +12,7 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api'
 const contactsStore = useContactsStore()
 const { contacts } = storeToRefs(contactsStore)
 
+const contactsFiltered = ref(Object.assign({}, contacts))
 /** Развёрнутые группы в таблице */
 const expandedRowGroups = ref([1, 2, 3])
 
@@ -22,6 +23,7 @@ const filters = ref({
         matchMode: FilterMatchMode.STARTS_WITH
     }
 })
+
 // Запускаем таймер
 const currentTime = ref(null)
 setInterval(() => {
@@ -61,6 +63,26 @@ const getV = () => {
     console.log(r)
     return r
 }
+
+/** Обновляет отфильтрованный список список */
+const onFilter = (val) => {
+    contactsFiltered.value = val.filteredValue
+}
+
+/** Получает количество элементов в отфильтрованном списке */
+const getFiteredItemsCount = (statusGroupId) => {
+    let total = 0
+    console.log({ statusGroupId })
+    console.log(contactsFiltered.value)
+    if (contactsFiltered.value) {
+        for (let contact of contactsFiltered.value) {
+            if (contact.status_group_id === statusGroupId) {
+                total++
+            }
+        }
+    }
+    return total
+}
 </script>
 
 <template>
@@ -98,6 +120,7 @@ const getV = () => {
                     group-rows-by="status_group_id"
                     sort-mode="multiple"
                     :multi-sort-meta="multiSort"
+                    @filter="onFilter"
                     @row-click="
                         (e) => {
                             console.log('click!')
@@ -118,10 +141,11 @@ const getV = () => {
                                 'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
                             }"
                         >
-                            <span>{{
-                                UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id)
-                            }}</span>
+                            <div>
+                                {{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}
+                            </div>
                         </div>
+                        <div class="header-user-counter">{{ getFiteredItemsCount(slotProps.data.status_group_id) }}</div>
                     </template>
                     <Column field="status_group_id" header="!"></Column>
 
@@ -177,15 +201,35 @@ const getV = () => {
     border-radius: 6px;
 }
 .rowgroup-header-title {
-    display: inline-flex;
+    position: absolute;
+    left: 2rem;
+    top: 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: left;
+    align-content: left;
+    line-height: 100%;
+    font-size: 1rem;
+    align-content: center;
+    margin-bottom: 0.6rem;
+    transform: translateY(50%);
+}
+.header-user-counter {
+    position: absolute;
+    right: 1rem;
+    top: 0;
+    display: flex;
+    gap: 1rem;
     justify-content: center;
     align-content: center;
     line-height: 100%;
     font-size: 1rem;
     align-content: center;
     margin-bottom: 0.6rem;
+    transform: translateY(50%);
 }
 .p-rowgroup-header td {
+    position: relative;
     font-size: 0;
     line-height: 0;
     padding: 0;
