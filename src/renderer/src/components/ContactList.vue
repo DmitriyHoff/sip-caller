@@ -68,8 +68,6 @@ const getV = () => {
         group-rows-by="status_group_id"
         sort-mode="multiple"
         :multi-sort-meta="multiSort"
-        scrollable
-        scroll-height="100%"
         @row-click="
             (e) => {
                 console.log('click!')
@@ -113,17 +111,20 @@ const getV = () => {
             </template>
         </Column>
 
-        <template #groupfooter="slotProps">
-            <div class="flex justify-content-end font-bold w-full">Total Customers: ...</div>
-        </template>
-
-        <template #header=slotProps>
+        <template #header="slotProps">
             <div class="bg-orange-400"></div>
         </template>
         <template #groupheader="slotProps">
-            <span class="vertical-align-middle ml-2 font-bold bg-orange-400">{{
-                UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id)
-            }}</span>
+            <div class="rowgroup-header-title"
+            :class="{
+                    'bg-green-500': UserStatusGroup.isOnline(slotProps.data.status_id),
+                    'bg-orange-400': UserStatusGroup.isWork(slotProps.data.status_id),
+                    'bg-yellow-400': UserStatusGroup.isLanchBreak(slotProps.data.status_id),
+                    'bg-gray-400': UserStatusGroup.isOffline(slotProps.data.status_id)
+                }"
+            >
+                <span>{{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}</span>
+            </div>
         </template>
     </DataTable>
 </template>
@@ -132,6 +133,39 @@ const getV = () => {
 .p-datatable-thead {
     display: none !important;
 }
+.color-marker {
+    display: none;
+}
+.rowgroup-header-title {
+    display: inline-flex;
+    justify-content: center;
+    align-content: center;
+    line-height: 100%;
+    font-size: 1rem;
+    align-content: center;
+    margin-bottom: 0.6rem;
+}
+.p-rowgroup-header td {
+    font-size: 0;
+    line-height: 0;
+    padding: 0;
+    height: 0;
+    border-radius: 6px;
+    user-select: none;
+}
+.p-rowgroup-header td:has(> .bg-orange-400) {
+    background-color: var(--orange-400);
+}
+.p-rowgroup-header td:has(> .bg-yellow-400) {
+    background-color: var(--yellow-400);
+}
+.p-rowgroup-header td:has(> .bg-gray-400) {
+    background-color: var(--gray-400);
+}
+.p-rowgroup-header td:has(> .bg-green-500) {
+    background-color: var(--green-500);
+}
+
 .phone {
     font-family: 'RobotoMono' !important;
     font-weight: 700;
