@@ -145,15 +145,20 @@ window.api.onPhoneAcceptClick(() => {
     // window.api.sendSipBeginCall()
 })
 // store.call(600)
-const loginName = () => {
+const userName = () => {
     const user = contactsStore.contacts.find((item) => item.id_user === credentials.login_id)
     if (user) return user.fullName
     return null
 }
-const statusId = () => {
+const userStatus = () => {
     const user = contactsStore.contacts.find((item) => item.id_user === credentials.login_id)
     if (user) return user.status_id
+    return null
+}
 
+const userPhoneNumber = () => {
+    const user = contactsStore.contacts.find((item) => item.id_user === credentials.login_id)
+    if (user) return user.phone_number
     return null
 }
 const items = ref([
@@ -195,7 +200,11 @@ const items = ref([
         <div class="flex-none card text-sm">
             <div class="flex flex-row justify-content-between align-content-center">
                 <TabMenu :model="items" />
-                <UserInfo :user-name="loginName()" :status-id="statusId()" />
+                <UserInfo
+                    :user-name="userName()"
+                    :status-id="userStatus()"
+                    :phone-number="userPhoneNumber()"
+                />
             </div>
         </div>
         <router-view />

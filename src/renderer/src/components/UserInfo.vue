@@ -2,13 +2,21 @@
 import { ref } from 'vue'
 import UserAvatar from './UserAvatar.vue'
 
-const props = defineProps({ userName: String, statusId: Number })
-// const userName = ref('Гофф Дмитрий')
-// const userStatus = ref(2)
+const props = defineProps({
+    userName: String,
+    statusId: Number,
+    phoneNumber: Number
+})
 </script>
+
 <template>
-    <div class="flex align-content-center align-items-center mr-3">
-        <UserAvatar :name="props.userName" :status-id="props.statusId" />
-        <span class="flex p-1 font-bold text-color-secondary">{{ userName }}</span>
+    <div class="flex align-items-center">
+        <div class="flex align-items-start mr-3 gap-3">
+            <UserAvatar :name="props.userName" :status-id="props.statusId" />
+            <div class="flex flex-column h-full align-items-start line-height-1 gap-2">
+                <p class="text-primary flex p-0 m-0 font-bold">{{ userName }}</p>
+                <p class="p-0 m-0">{{ phoneNumber }}</p>
+            </div>
+        </div>
     </div>
 </template>
