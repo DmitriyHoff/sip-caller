@@ -92,20 +92,27 @@ const getFiteredItemsCount = (statusGroupId) => {
     <div class="flex flex-column w-full h-full align-items-stretch p-0">
         <div class="p-1">
             <div class="flex flex-wrap w-full align-items-center justify-content-between gap-2">
-                <div class="flex text-sm text-900">Поиск:</div>
                 <div class="flex flex-grow-1 p-0">
                     <InputText
                         v-model="filters['global'].value"
                         placeholder="Найти..."
                         type="text"
                         size="small"
-                        class="w-full"
+                        class="w-full text-sm p-2 font-normal"
                     />
                 </div>
             </div>
         </div>
         <div style="height: 0; flex: 1 1 auto">
-            <ScrollPanel class="w-full h-full">
+            <ScrollPanel
+                class="w-full h-full"
+                :pt="{
+                    wrapper: {
+                        style: { 'border-right': '10px solid var(--surface-ground)' }
+                    },
+                    bary: 'hover:bg-primary-400 bg-primary-300 opacity-100'
+                }"
+            >
                 <DataTable
                     v-model:selection="selectedUser"
                     v-model:expandedRowGroups="expandedRowGroups"
@@ -145,7 +152,9 @@ const getFiteredItemsCount = (statusGroupId) => {
                                 {{ UserStatusGroup.getStatusGroupTitle(slotProps.data.status_id) }}
                             </div>
                         </div>
-                        <div class="header-user-counter">{{ getFiteredItemsCount(slotProps.data.status_group_id) }}</div>
+                        <div class="header-user-counter">
+                            {{ getFiteredItemsCount(slotProps.data.status_group_id) }}
+                        </div>
                     </template>
                     <Column field="status_group_id" header="!"></Column>
 
@@ -202,31 +211,20 @@ const getFiteredItemsCount = (statusGroupId) => {
 }
 .rowgroup-header-title {
     position: absolute;
-    left: 2rem;
-    top: 0;
-    display: flex;
-    gap: 1rem;
-    justify-content: left;
-    align-content: left;
+    left: 3rem;
+    top: 50%;
     line-height: 100%;
     font-size: 1rem;
-    align-content: center;
-    margin-bottom: 0.6rem;
-    transform: translateY(50%);
+    transform: translateY(-50%);
 }
 .header-user-counter {
     position: absolute;
     right: 1rem;
-    top: 0;
-    display: flex;
+    top: 50%;
     gap: 1rem;
-    justify-content: center;
-    align-content: center;
     line-height: 100%;
     font-size: 1rem;
-    align-content: center;
-    margin-bottom: 0.6rem;
-    transform: translateY(50%);
+    transform: translateY(-50%);
 }
 .p-rowgroup-header td {
     position: relative;
